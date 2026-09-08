@@ -8,7 +8,7 @@
 
 backend:
   name: github
-  repo: YOUR-GITHUB-USERNAME/condo-site   # set this when you connect GitHub
+  repo: altahomes1/solarus-site
   branch: main
 
 # Lets the dashboard run on this computer without any login, for previewing.
