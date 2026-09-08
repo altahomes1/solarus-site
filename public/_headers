@@ -2,9 +2,6 @@
 # https://developers.cloudflare.com/pages/configuration/headers/
 
 /*
-  # TEST PHASE ONLY: keeps search engines away until launch.
-  # REMOVE this line when the real domain goes live.
-  X-Robots-Tag: noindex
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
