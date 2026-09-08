@@ -1,0 +1,58 @@
+{
+  "seoDescription": "Inquire about a Solarus residence or penthouse on Galveston Beach.",
+  "header": {
+    "eyebrow": "Inquire",
+    "title": "Schedule a private appointment",
+    "intro": "Tell us what you are looking for and we will follow up promptly.",
+    "image": "",
+    "imageAlt": ""
+  },
+  "emailSubject": "New inquiry",
+  "form": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "phone": "Phone",
+    "optional": "(optional)",
+    "interestLegend": "I am interested in",
+    "interestPurchasing": "Purchasing",
+    "interestLeasing": "Leasing",
+    "interestUndecided": "Still deciding",
+    "unitLabel": "Residence of interest",
+    "unitNoPreference": "No preference yet",
+    "timeframeLabel": "Timeframe",
+    "timeframes": [
+      "Immediately",
+      "1–3 months",
+      "3–6 months",
+      "6+ months",
+      "Just researching"
+    ],
+    "messageLabel": "Message",
+    "messagePlaceholder": "Type your message here…",
+    "consent": "I agree to be contacted by Solarus via call, email and text about the residences. Message and data rates may apply.",
+    "submitButton": "Submit",
+    "sendingLabel": "Sending…",
+    "replyNote": "We reply promptly.",
+    "roleLegend": "I am a",
+    "roleBuyer": "Buyer",
+    "roleBroker": "Broker"
+  },
+  "success": {
+    "title": "Thanks for submitting!",
+    "body": "A member of the Solarus team will be in touch. For anything urgent, call"
+  },
+  "errors": {
+    "generic": "Something went wrong sending your inquiry.",
+    "retry": "Please try again, or email us directly.",
+    "network": "We could not reach the form service. Please check your connection or email us directly."
+  },
+  "sidebar": {
+    "title": "Solarus",
+    "phone": "Phone",
+    "email": "Email",
+    "hoursTitle": "Tours",
+    "representedTitle": "Sales",
+    "mapButton": "View the map"
+  }
+}

@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import PageHero from '../components/PageHero.astro';
+import AvailabilityGrid from '../components/AvailabilityGrid.astro';
+import page from '../data/pages/availability.json';
+import { availabilitySummary, units } from '../lib/units';
+
+const summary = availabilitySummary();
+
+// Which offerings exist at all? Drives whether the sale/lease tiles appear.
+const offerings = new Set(units.map((u) => u.listingType));
+
+// One row per floor plan, derived from the unit files so the table never drifts.
+const planSummary = Object.values(
+  units.reduce<Record<string, { name: string; beds: number; baths: number; min: number; max: number; count: number; available: number }>>(
+    (acc, unit) => {
+      const entry = (acc[unit.planId] ??= {
+        name: unit.floorPlan, beds: unit.beds, baths: unit.baths,
+        min: unit.sqft, max: unit.sqft, count: 0, available: 0,
+      });
+      if (unit.sqft > 0) {
+        entry.min = entry.min > 0 ? Math.min(entry.min, unit.sqft) : unit.sqft;
+        entry.max = Math.max(entry.max, unit.sqft);
+      }
+      entry.count += 1;
+      if (unit.status === 'available') entry.available += 1;
+      return acc;
+    },
+    {},
+  ),
+).sort((a, b) => a.min - b.min);
+
+const t = page.tiles;
+const c = page.plans.columns;
+---
+
+<BaseLayout title={page.header.eyebrow} description={page.seoDescription}>
+  <PageHero eyebrow={page.header.eyebrow} title={page.header.title} intro={page.header.intro} image={page.header.image} imageAlt={page.header.imageAlt}>
+
+      <dl class:list={['mt-12 grid grid-cols-2 gap-px border border-linen-300 bg-linen-300', offerings.size > 1 ? 'sm:grid-cols-4' : 'sm:grid-cols-2']}>
+        <div class="bg-linen-50 px-5 py-6">
+          <dt class="text-[0.6rem] tracking-widest text-ink-400 uppercase">{t.total}</dt>
+          <dd class="mt-2 font-display text-3xl text-ink-900">{summary.total}</dd>
+        </div>
+        <div class="bg-linen-50 px-5 py-6">
+          <dt class="text-[0.6rem] tracking-widest text-ink-400 uppercase">{t.available}</dt>
+          <dd class="mt-2 font-display text-3xl text-ink-900">{summary.available}</dd>
+        </div>
+        {
+          offerings.size > 1 && (
+            <>
+              <div class="bg-linen-50 px-5 py-6">
+                <dt class="text-[0.6rem] tracking-widest text-ink-400 uppercase">{t.forSale}</dt>
+                <dd class="mt-2 font-display text-3xl text-ink-900">{summary.forSale}</dd>
+              </div>
+              <div class="bg-linen-50 px-5 py-6">
+                <dt class="text-[0.6rem] tracking-widest text-ink-400 uppercase">{t.forLease}</dt>
+                <dd class="mt-2 font-display text-3xl text-ink-900">{summary.forLease}</dd>
+              </div>
+            </>
+          )
+        }
+      </dl>
+  </PageHero>
+
+  <AvailabilityGrid />
+
+  <!-- Floor plan overview -->
+  <section class="border-t border-linen-300 bg-linen-100 py-14 sm:py-28">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8">
+      <SectionHeading eyebrow={page.plans.eyebrow} title={page.plans.title} intro={page.plans.intro} />
+
+      <div class="mt-12 overflow-x-auto border border-linen-300 bg-linen-50">
+        <table class="w-full min-w-[42rem] text-left text-sm">
+          <thead class="border-b border-linen-300 text-[0.6rem] tracking-widest text-ink-400 uppercase">
+            <tr>
+              <th scope="col" class="px-5 py-4 font-medium">{c.plan}</th>
+              <th scope="col" class="px-5 py-4 font-medium">{c.beds}</th>
+              <th scope="col" class="px-5 py-4 font-medium">{c.baths}</th>
+              <th scope="col" class="px-5 py-4 font-medium">{c.size}</th>
+              <th scope="col" class="px-5 py-4 font-medium">{c.inBuilding}</th>
+              <th scope="col" class="px-5 py-4 font-medium">{c.available}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-linen-200">
+            {
+              planSummary.map((plan) => (
+                <tr class="transition-colors hover:bg-linen-100">
+                  <th scope="row" class="px-5 py-4 font-normal text-ink-900">{plan.name}</th>
+                  <td class="px-5 py-4 text-ink-600">{plan.beds === 0 ? page.plans.studio : plan.beds}</td>
+                  <td class="px-5 py-4 text-ink-600">{plan.baths}</td>
+                  <td class="px-5 py-4 text-ink-600">
+                    {plan.max === 0
+                      ? page.plans.tbd
+                      : plan.min === plan.max
+                        ? `${plan.min.toLocaleString('en-US')} sq ft`
+                        : `${plan.min.toLocaleString('en-US')}–${plan.max.toLocaleString('en-US')} sq ft`}
+                  </td>
+                  <td class="px-5 py-4 text-ink-600">{plan.count}</td>
+                  <td class="px-5 py-4">
+                    {plan.available > 0 ? (
+                      <span class="text-status-available">{plan.available}</span>
+                    ) : (
+                      <span class="text-ink-400">{page.plans.waitlist}</span>
+                    )}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <p class="mt-6 max-w-3xl text-xs leading-relaxed text-ink-400">{page.disclosure}</p>
+    </div>
+  </section>
+</BaseLayout>

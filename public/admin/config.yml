@@ -1,0 +1,793 @@
+# ---------------------------------------------------------------------------
+# Settings for the editing dashboard at /admin
+#
+# Each "collection" below becomes a section in the left-hand menu, and each
+# "field" becomes a box on a form. Changing a label here changes what the
+# person editing the site sees.
+# ---------------------------------------------------------------------------
+
+backend:
+  name: github
+  repo: YOUR-GITHUB-USERNAME/condo-site   # set this when you connect GitHub
+  branch: main
+
+# Lets the dashboard run on this computer without any login, for previewing.
+local_backend: true
+
+# Where uploaded photos are saved. Keeping them in src/assets means Astro
+# still shrinks and converts them automatically when the site builds.
+media_folder: src/assets/gallery
+public_folder: /src/assets/gallery
+
+publish_mode: simple
+site_url: /
+display_url: /
+
+collections:
+  # ---------------------------------------------------------------- units ---
+  - name: units
+    editor: { preview: false }
+    label: Residences
+    label_singular: Residence
+    description: Every unit in the building. Change a price or mark one sold here.
+    folder: src/data/units
+    extension: json
+    format: json
+    create: true
+    delete: true
+    slug: '{{fields.unit}}'
+    identifier_field: unit
+    summary: '{{unit}} — {{floorPlan}} — {{status}}'
+    sortable_fields: [unit, price, sqft, status, floor]
+    view_groups:
+      - label: Status
+        field: status
+      - label: Offering
+        field: listingType
+    fields:
+      - { name: unit, label: 'Unit number', widget: string, hint: 'Shown as the big number on the card, e.g. 907' }
+      - { name: floor, label: Floor, widget: string, hint: 'e.g. 2, or Penthouse' }
+      - name: status
+        label: Status
+        widget: select
+        default: available
+        options:
+          - { label: 'Available', value: available }
+          - { label: 'Pending', value: pending }
+          - { label: 'Sold / Leased', value: sold }
+      - name: listingType
+        label: Offering
+        widget: select
+        default: sale
+        options:
+          - { label: 'For sale', value: sale }
+          - { label: 'For lease', value: lease }
+      - name: price
+        label: Price
+        widget: number
+        value_type: int
+        min: 0
+        hint: 'Total price for a sale, or the monthly rent for a lease. Numbers only — no $ or commas. Leave 0 to show "Price on request".'
+      - { name: beds, label: Bedrooms, widget: number, value_type: int, min: 0, hint: 'Use 0 for a studio' }
+      - { name: baths, label: Bathrooms, widget: number, value_type: float, min: 0, step: 0.5 }
+      - { name: sqft, label: 'Interior square feet', widget: number, value_type: int, min: 0, hint: 'Leave 0 if not yet known — shows as TBD' }
+      - { name: exteriorSqft, label: 'Exterior square feet (terrace / balcony)', widget: number, value_type: int, min: 0, required: false, hint: 'Optional. When set, the card shows Interior / Exterior / Total.' }
+      - { name: planPdf, label: 'Floor plan PDF', widget: file, required: false, media_folder: /public/plans, public_folder: /plans, hint: 'Optional. Adds a "Download floor plan" button.' }
+      - name: planId
+        label: 'Floor plan image'
+        widget: select
+        default: a
+        options:
+          - { label: 'Residence plan (plan-a.jpg)', value: a }
+          - { label: 'Penthouse plan (plan-b.jpg)', value: b }
+        hint: 'Which drawing to show on the card. To replace a drawing, upload a file named plan-a.jpg or plan-b.jpg in Media.'
+      - { name: floorPlan, label: 'Plan name', widget: string, hint: 'e.g. Residence, or Penthouse' }
+      - name: exposure
+        label: Exposure
+        widget: select
+        default: Gulf
+        options: [Gulf, North, South, East, West, Panoramic]
+      - name: availableOn
+        label: 'Available from'
+        widget: datetime
+        date_format: 'MMM D, YYYY'
+        time_format: false
+        picker_utc: true
+        required: false
+        hint: 'Leave empty to show "Now"'
+      - name: features
+        label: Features
+        widget: list
+        required: false
+        summary: '{{fields.feature}}'
+        field: { name: feature, label: Feature, widget: string }
+        hint: 'The first three appear on the card'
+
+  # -------------------------------------------------------------- gallery ---
+  - name: gallery
+    editor: { preview: false }
+    label: Photo gallery
+    files:
+      - name: photos
+        label: Gallery photos
+        file: src/data/photos.json
+        description: Drag photos to reorder them. The first three load first.
+        fields:
+          - name: photos
+            label: Photos
+            label_singular: Photo
+            widget: list
+            summary: '{{fields.caption}}'
+            fields:
+              - { name: image, label: Photo, widget: image, choose_url: false }
+              - { name: caption, label: Caption, widget: string, hint: 'Appears when someone hovers the photo' }
+              - name: alt
+                label: 'Description for screen readers'
+                widget: string
+                hint: 'Describe what is in the photo, for visually impaired visitors and search engines'
+              - name: category
+                label: Category
+                widget: select
+                create: true
+                options: [Architecture, Residences, Amenities]
+              - { name: wide, label: 'Show wide (spans two columns)', widget: boolean, default: false, required: false }
+
+  # ----------------------------------------------------------- page text ----
+  - name: pages
+    editor: { preview: false }
+    label: Page text
+    description: Every sentence on every page. Pick a page, change the words, publish.
+    files:
+
+      - name: home
+        label: 'Home page'
+        file: src/data/pages/home.json
+        fields:
+          - { name: seoDescription, label: 'Description for Google', widget: text }
+          - { name: heroEyebrow, label: 'Banner: small line above the headline', widget: string, hint: 'The headline itself is "Headline on the home page" under Building info' }
+          - { name: heroBadge, label: 'Banner: status badge (e.g. "Now selling · Occupancy 2027")', widget: string, required: false, hint: 'Leave empty to hide' }
+          - { name: heroStatsInHero, label: 'Show the numbers strip inside the banner', widget: boolean, default: true, hint: 'The numbers themselves are under Building info' }
+          - { name: heroImageAlt, label: 'Banner: photo description (for screen readers)', widget: string }
+          - name: heroButtons
+            label: 'Banner buttons'
+            widget: object
+            fields:
+              - { name: primary, label: 'Main button', widget: string }
+              - { name: secondary, label: 'Second button', widget: string }
+          - name: introSection
+            label: '"About the building" section'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+          - name: introImages
+            label: '"About the building" photo descriptions'
+            widget: object
+            collapsed: true
+            fields:
+              - { name: alt1, label: 'Tall photo', widget: string }
+              - { name: alt2, label: 'Top small photo', widget: string }
+              - { name: alt3, label: 'Bottom small photo', widget: string }
+          - name: discoverSection
+            label: '"Explore" cards heading'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+          - name: discover
+            label: '"Explore" cards (one per section; the first is shown large)'
+            widget: list
+            summary: '{{fields.title}}'
+            fields:
+              - { name: title, label: Title, widget: string }
+              - { name: text, label: 'One line', widget: string }
+              - { name: image, label: Photo, widget: image, choose_url: false }
+              - { name: link, label: 'Goes to', widget: select, options: ['/availability', '/amenities', '/gallery', '/visionaries', '/vision', '/location', '/contact'] }
+              - { name: linkLabel, label: 'Button word', widget: string, default: Explore }
+          - name: features
+            label: 'Feature stories (big photo + text, alternating sides)'
+            widget: list
+            summary: '{{fields.title}}'
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: body, label: Paragraph, widget: text }
+              - { name: image, label: Photo, widget: image, choose_url: false }
+              - { name: imageAlt, label: 'Photo description (for screen readers)', widget: string }
+              - { name: link, label: 'Link (e.g. /amenities)', widget: string }
+              - { name: linkLabel, label: 'Link wording (e.g. Discover the amenities)', widget: string }
+              - { name: imageSide, label: 'Photo on which side?', widget: select, options: [left, right], default: right }
+          - name: pillars
+            label: 'Three selling points'
+            widget: list
+            summary: '{{fields.title}}'
+            fields:
+              - { name: title, label: Heading, widget: string }
+              - { name: body, label: Text, widget: text }
+          - name: featuredSection
+            label: '"Available now" section'
+            widget: object
+            hint: 'The sentence under this heading ("15 of 24 residences are available") is calculated automatically from your units.'
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+          - { name: featuredButton, label: '"See all" button (the number and word are added automatically)', widget: string }
+          - name: priceChips
+            label: '"From" price labels (only shown if you offer both sale and lease)'
+            widget: object
+            collapsed: true
+            fields:
+              - { name: saleFrom, label: 'Sale label', widget: string }
+              - { name: leaseFrom, label: 'Lease label', widget: string }
+          - name: amenitiesSection
+            label: 'Amenities section'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+          - name: amenities
+            label: 'Amenities list'
+            widget: list
+            field: { name: amenity, label: Amenity, widget: string }
+          - name: locationSection
+            label: 'Location teaser'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+          - { name: locationImageAlt, label: 'Location teaser: photo description', widget: string }
+          - { name: locationButton, label: 'Location teaser button', widget: string }
+          - name: ctaSection
+            label: 'Closing "book a tour" block'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+          - name: ctaButtons
+            label: 'Closing block buttons'
+            widget: object
+            fields:
+              - { name: primary, label: 'Main button', widget: string }
+              - { name: call, label: 'Call button (phone number is added automatically)', widget: string }
+
+      - name: availability
+        label: 'Availability page'
+        file: src/data/pages/availability.json
+        fields:
+          - { name: seoDescription, label: 'Description for Google', widget: text }
+          - name: header
+            label: 'Page heading'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+              - { name: image, label: 'Big photo behind the heading (optional)', widget: image, required: false, choose_url: false, hint: 'Leave empty for a plain heading' }
+              - { name: imageAlt, label: 'Photo description (for screen readers)', widget: string, required: false }
+          - name: tiles
+            label: 'Number tiles'
+            widget: object
+            collapsed: true
+            fields:
+              - { name: total, label: 'Total', widget: string }
+              - { name: available, label: 'Available', widget: string }
+              - { name: forSale, label: 'For sale', widget: string }
+              - { name: forLease, label: 'For lease', widget: string }
+          - name: filters
+            label: 'Filter bar wording'
+            widget: object
+            collapsed: true
+            fields:
+              - { name: offeringLabel, label: 'Offering label', widget: string }
+              - { name: offeringAll, label: 'Offering: all', widget: string }
+              - { name: offeringSale, label: 'Offering: sale', widget: string }
+              - { name: offeringLease, label: 'Offering: lease', widget: string }
+              - { name: bedroomsLabel, label: 'Bedrooms label', widget: string }
+              - { name: bedroomsAny, label: 'Bedrooms: any', widget: string }
+              - { name: studio, label: 'Studio', widget: string }
+              - { name: oneBed, label: '1 bed', widget: string }
+              - { name: twoBed, label: '2 bed', widget: string }
+              - { name: threePlusBed, label: '3+ bed', widget: string }
+              - { name: searchLabel, label: 'Search label', widget: string }
+              - { name: searchPlaceholder, label: 'Search box hint', widget: string }
+              - { name: statusLabel, label: 'Status label', widget: string }
+              - { name: statusAll, label: 'Status: all', widget: string }
+              - { name: statusAvailable, label: 'Status: available', widget: string }
+              - { name: statusPending, label: 'Status: pending', widget: string }
+              - { name: statusSold, label: 'Status: sold', widget: string }
+              - { name: sortLabel, label: 'Sort label', widget: string }
+              - { name: sortRecommended, label: 'Sort: recommended', widget: string }
+              - { name: sortPriceAsc, label: 'Sort: price low-high', widget: string }
+              - { name: sortPriceDesc, label: 'Sort: price high-low', widget: string }
+              - { name: sortSizeDesc, label: 'Sort: largest first', widget: string }
+              - { name: sortSizeAsc, label: 'Sort: smallest first', widget: string }
+              - { name: sortUnit, label: 'Sort: by unit number', widget: string }
+              - { name: resultOf, label: 'Word between the counts ("12 OF 24")', widget: string }
+              - { name: resetLabel, label: 'Reset link', widget: string }
+          - name: emptyState
+            label: 'When no units match the filters'
+            widget: object
+            collapsed: true
+            fields:
+              - { name: title, label: Heading, widget: string }
+              - { name: body, label: Text, widget: text }
+              - { name: clearButton, label: 'Clear button', widget: string }
+              - { name: contactButton, label: 'Contact button', widget: string }
+          - name: plans
+            label: 'Floor plan table'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+              - name: columns
+                label: 'Column headings'
+                widget: object
+                collapsed: true
+                fields:
+                  - { name: plan, label: Plan, widget: string }
+                  - { name: beds, label: Beds, widget: string }
+                  - { name: baths, label: Baths, widget: string }
+                  - { name: size, label: Size, widget: string }
+                  - { name: inBuilding, label: 'In building', widget: string }
+                  - { name: available, label: Available, widget: string }
+              - { name: waitlist, label: 'Shown when a plan has none available', widget: string }
+              - { name: tbd, label: 'Shown when a size is not yet known', widget: string }
+              - { name: studio, label: 'Word for 0 bedrooms', widget: string }
+          - { name: disclosure, label: 'Small print under the table', widget: text }
+
+      - name: gallery
+        label: 'Gallery page'
+        file: src/data/pages/gallery.json
+        hint: 'The photos themselves are under "Photo gallery" in the left menu.'
+        fields:
+          - { name: seoDescription, label: 'Description for Google', widget: text }
+          - name: header
+            label: 'Page heading'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+              - { name: image, label: 'Big photo behind the heading (optional)', widget: image, required: false, choose_url: false, hint: 'Leave empty for a plain heading' }
+              - { name: imageAlt, label: 'Photo description (for screen readers)', widget: string, required: false }
+          - { name: filterAll, label: '"All" filter button', widget: string }
+          - { name: emptyMessage, label: 'Shown when a category has no photos', widget: string }
+          - name: cta
+            label: 'Closing "book a tour" block'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+              - { name: button, label: Button, widget: string }
+
+      - name: location
+        label: 'Location page'
+        file: src/data/pages/location.json
+        hint: 'The address and map pin are under Building info.'
+        fields:
+          - { name: seoDescription, label: 'Description for Google', widget: text }
+          - name: header
+            label: 'Page heading'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+              - { name: image, label: 'Big photo behind the heading (optional)', widget: image, required: false, choose_url: false, hint: 'Leave empty for a plain heading' }
+              - { name: imageAlt, label: 'Photo description (for screen readers)', widget: string, required: false }
+          - { name: directionsButton, label: '"Get directions" button', widget: string }
+          - name: landmark
+            label: 'Galveston landmark block (photo + text, above the map)'
+            widget: object
+            collapsed: true
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: body, label: Paragraph, widget: text }
+              - { name: image, label: Photo, widget: image, required: false, choose_url: false, media_folder: /src/assets/location, public_folder: /src/assets/location }
+              - { name: imageAlt, label: 'Photo description (for screen readers)', widget: string, required: false }
+          - { name: mapCredit, label: 'Small print under the map', widget: string }
+          - name: scores
+            label: 'Walk / transit / bike scores (delete all to hide the section)'
+            widget: list
+            summary: '{{fields.label}}: {{fields.value}}'
+            fields:
+              - { name: value, label: Number, widget: string }
+              - { name: label, label: Label, widget: string }
+              - { name: note, label: 'One-line note', widget: string }
+          - name: neighborhoodSection
+            label: 'Neighborhood heading'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+          - name: neighborhoodGroups
+            label: 'Neighborhood columns (delete all to hide the section)'
+            widget: list
+            summary: '{{fields.title}}'
+            fields:
+              - { name: title, label: 'Column heading', widget: string }
+              - name: items
+                label: Places
+                widget: list
+                summary: '{{fields.name}} — {{fields.minutes}} min'
+                fields:
+                  - { name: name, label: Name, widget: string }
+                  - { name: detail, label: 'Short description', widget: string }
+                  - { name: minutes, label: 'Minutes away', widget: number, value_type: int, min: 0 }
+          - { name: minutesLabel, label: 'Word after the number of minutes', widget: string }
+          - name: commuteSection
+            label: 'Getting around heading'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+          - name: commutes
+            label: 'Travel times (delete all to hide the section)'
+            widget: list
+            summary: '{{fields.destination}} — {{fields.time}}'
+            fields:
+              - { name: destination, label: Destination, widget: string }
+              - { name: mode, label: 'How (Walk, Drive, Bike…)', widget: string }
+              - { name: time, label: 'Time (e.g. 6 min)', widget: string }
+
+      - name: contact
+        label: 'Contact page'
+        file: src/data/pages/contact.json
+        hint: 'Phone, email, address, hours and the brokerage are under Building info.'
+        fields:
+          - { name: seoDescription, label: 'Description for Google', widget: text }
+          - name: header
+            label: 'Page heading'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+              - { name: image, label: 'Big photo behind the heading (optional)', widget: image, required: false, choose_url: false, hint: 'Leave empty for a plain heading' }
+              - { name: imageAlt, label: 'Photo description (for screen readers)', widget: string, required: false }
+          - { name: emailSubject, label: 'Subject line of the email you receive', widget: string }
+          - name: form
+            label: 'Form wording'
+            widget: object
+            fields:
+              - { name: firstName, label: 'First name label', widget: string }
+              - { name: lastName, label: 'Last name label', widget: string }
+              - { name: email, label: 'Email label', widget: string }
+              - { name: phone, label: 'Phone label', widget: string }
+              - { name: optional, label: '"(optional)" tag', widget: string }
+              - { name: roleLegend, label: '"I am a" question', widget: string }
+              - { name: roleBuyer, label: 'Option: buyer', widget: string }
+              - { name: roleBroker, label: 'Option: broker', widget: string }
+              - { name: interestLegend, label: '"I am interested in" question', widget: string }
+              - { name: interestPurchasing, label: 'Option: purchasing', widget: string }
+              - { name: interestLeasing, label: 'Option: leasing (only shown if you lease)', widget: string }
+              - { name: interestUndecided, label: 'Option: undecided', widget: string }
+              - { name: unitLabel, label: 'Unit dropdown label', widget: string }
+              - { name: unitNoPreference, label: 'Unit dropdown: first choice', widget: string }
+              - { name: timeframeLabel, label: 'Timeframe label', widget: string }
+              - name: timeframes
+                label: 'Timeframe choices'
+                widget: list
+                field: { name: option, label: Choice, widget: string }
+              - { name: messageLabel, label: 'Message label', widget: string }
+              - { name: messagePlaceholder, label: 'Message box hint', widget: string }
+              - { name: consent, label: 'Consent checkbox text', widget: text }
+              - { name: submitButton, label: 'Send button', widget: string }
+              - { name: sendingLabel, label: 'Send button while sending', widget: string }
+              - { name: replyNote, label: 'Note next to the send button', widget: string }
+          - name: success
+            label: 'Thank-you message'
+            widget: object
+            fields:
+              - { name: title, label: Heading, widget: string }
+              - { name: body, label: 'Text (your phone number is added at the end)', widget: text }
+          - name: errors
+            label: 'Error messages'
+            widget: object
+            collapsed: true
+            fields:
+              - { name: generic, label: 'Something went wrong', widget: string }
+              - { name: retry, label: 'Please try again', widget: string }
+              - { name: network, label: 'No connection', widget: string }
+          - name: sidebar
+            label: 'Side panel wording'
+            widget: object
+            collapsed: true
+            fields:
+              - { name: title, label: 'Panel heading', widget: string }
+              - { name: phone, label: 'Phone label', widget: string }
+              - { name: email, label: 'Email label', widget: string }
+              - { name: hoursTitle, label: 'Hours heading', widget: string }
+              - { name: representedTitle, label: 'Brokerage heading', widget: string }
+              - { name: mapButton, label: 'Map button', widget: string }
+
+      - name: amenities
+        label: 'Amenities page'
+        file: src/data/pages/amenities.json
+        fields:
+          - { name: seoDescription, label: 'Description for Google', widget: text }
+          - name: header
+            label: 'Page heading'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+              - { name: image, label: 'Big photo behind the heading (optional)', widget: image, required: false, choose_url: false, hint: 'Leave empty for a plain heading' }
+              - { name: imageAlt, label: 'Photo description (for screen readers)', widget: string, required: false }
+          - name: groups
+            label: 'Amenity groups'
+            widget: list
+            summary: '{{fields.title}}'
+            fields:
+              - { name: title, label: 'Group heading', widget: string }
+              - { name: image, label: 'Photo above this group (optional)', widget: image, required: false, choose_url: false }
+              - { name: imageAlt, label: 'Photo description (for screen readers)', widget: string, required: false }
+              - name: items
+                label: Amenities
+                widget: list
+                summary: '{{fields.name}}'
+                fields:
+                  - { name: name, label: Name, widget: string }
+                  - { name: description, label: 'One or two sentences', widget: text }
+          - name: cta
+            label: 'Closing block'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: button, label: Button, widget: string }
+
+      - name: visionaries
+        label: 'Visionaries page'
+        file: src/data/pages/visionaries.json
+        fields:
+          - { name: seoDescription, label: 'Description for Google', widget: text }
+          - name: header
+            label: 'Page heading'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+              - { name: image, label: 'Big photo behind the heading (optional)', widget: image, required: false, choose_url: false, hint: 'Leave empty for a plain heading' }
+              - { name: imageAlt, label: 'Photo description (for screen readers)', widget: string, required: false }
+          - name: people
+            label: 'People'
+            widget: list
+            summary: '{{fields.name}} — {{fields.role}}'
+            fields:
+              - { name: name, label: Name, widget: string }
+              - { name: role, label: 'Title / role', widget: string }
+              - { name: photo, label: Photo, widget: image, media_folder: /src/assets/team, public_folder: /src/assets/team, choose_url: false }
+              - { name: bio, label: Bio, widget: text }
+
+      - name: vision
+        label: 'The Vision page'
+        file: src/data/pages/vision.json
+        fields:
+          - { name: seoDescription, label: 'Description for Google', widget: text }
+          - name: header
+            label: 'Page heading'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: 'Opening statement', widget: text }
+              - { name: image, label: 'Big photo behind the heading (optional)', widget: image, required: false, choose_url: false, hint: 'Leave empty for a plain heading' }
+              - { name: imageAlt, label: 'Photo description (for screen readers)', widget: string, required: false }
+          - name: paragraphs
+            label: 'Paragraphs'
+            widget: list
+            field: { name: text, label: Paragraph, widget: text }
+          - name: blocks
+            label: 'Numbered sections (Mission, Inspiration…)'
+            widget: list
+            summary: '{{fields.number}} {{fields.title}}'
+            hint: 'A section with empty text is hidden on the site.'
+            fields:
+              - { name: number, label: Number, widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: body, label: 'Text (blank line between paragraphs)', widget: text, required: false }
+          - name: cta
+            label: 'Closing block'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: button, label: Button, widget: string }
+
+      - name: notfound
+        label: '"Page not found" page'
+        file: src/data/pages/notfound.json
+        fields:
+          - { name: title, label: 'Browser tab title', widget: string }
+          - name: header
+            label: 'Heading'
+            widget: object
+            fields:
+              - { name: eyebrow, label: 'Small label above the heading', widget: string }
+              - { name: title, label: Heading, widget: string }
+              - { name: intro, label: Paragraph, widget: text, required: false }
+          - { name: primaryButton, label: 'Main button', widget: string }
+          - { name: secondaryButton, label: 'Second button', widget: string }
+
+  # ------------------------------------------------------------ site-wide ---
+  - name: shared
+    editor: { preview: false }
+    label: Site-wide text
+    description: Words that appear on every page — menu, header, footer, unit cards.
+    files:
+      - name: shared
+        label: 'Menu, header, footer & unit cards'
+        file: src/data/shared.json
+        fields:
+          - name: nav
+            label: 'Menu labels'
+            widget: object
+            fields:
+              - { name: home, label: Home, widget: string }
+              - { name: availability, label: 'Residences page', widget: string }
+              - { name: amenities, label: 'Amenities page', widget: string }
+              - { name: gallery, label: 'Gallery page', widget: string }
+              - { name: visionaries, label: 'Visionaries page', widget: string }
+              - { name: vision, label: 'Vision page', widget: string }
+              - { name: location, label: 'Location page (not in the menu)', widget: string }
+              - { name: contact, label: 'Inquire page', widget: string }
+          - name: header
+            label: 'Header'
+            widget: object
+            fields:
+              - { name: subtitle, label: 'Small word under the building name (leave empty to hide)', widget: string, required: false }
+              - { name: tourButton, label: 'Top-right button', widget: string }
+              - { name: skipLink, label: '"Skip to content" (accessibility)', widget: string }
+              - { name: menuToggle, label: 'Menu button description (accessibility)', widget: string }
+          - name: footer
+            label: 'Footer'
+            widget: object
+            fields:
+              - { name: salesGalleryTitle, label: 'Address column heading', widget: string }
+              - { name: exploreTitle, label: 'Links column heading', widget: string }
+              - { name: enquiriesTitle, label: 'Contact column heading', widget: string }
+              - { name: rights, label: 'After the © year and name', widget: string }
+              - { name: marketedBy, label: 'Before the brokerage name', widget: string }
+              - { name: legal, label: 'Legal small print', widget: text }
+          - name: unitCard
+            label: 'Unit card labels'
+            widget: object
+            collapsed: true
+            fields:
+              - { name: beds, label: Beds, widget: string }
+              - { name: baths, label: Baths, widget: string }
+              - { name: size, label: Size, widget: string }
+              - { name: floor, label: Floor, widget: string }
+              - { name: exposure, label: Exposure, widget: string }
+              - { name: available, label: '"Available" row label', widget: string }
+              - { name: status, label: '"Status" row label (sold units)', widget: string }
+              - { name: closed, label: 'Sold units: status value', widget: string }
+              - { name: noLongerAvailable, label: 'Sold units: button text', widget: string }
+              - { name: enquire, label: 'Enquire button (unit number is added)', widget: string }
+              - { name: forSale, label: 'Corner badge: sale', widget: string }
+              - { name: forLease, label: 'Corner badge: lease', widget: string }
+              - { name: statusAvailable, label: 'Badge: available', widget: string }
+              - { name: statusPending, label: 'Badge: pending', widget: string }
+              - { name: statusSold, label: 'Badge: sold', widget: string }
+              - { name: studio, label: 'Word for 0 bedrooms', widget: string }
+              - { name: priceOnRequest, label: 'Shown when price is 0', widget: string }
+              - { name: availableNow, label: 'Shown when no date is set', widget: string }
+              - { name: tbd, label: 'Shown when size is 0', widget: string }
+              - { name: interior, label: 'Interior', widget: string }
+              - { name: exterior, label: 'Exterior', widget: string }
+              - { name: total, label: 'Total', widget: string }
+              - { name: sqft, label: '"sq ft"', widget: string }
+              - { name: viewPlan, label: '"View plan" button', widget: string }
+              - { name: downloadPlan, label: '"Download floor plan" button', widget: string }
+              - { name: closePlan, label: '"Close" in the plan viewer', widget: string }
+          - name: mobileBar
+            label: 'Phone bottom bar (Call / Inquire)'
+            widget: object
+            fields:
+              - { name: enabled, label: 'Show the bar on phones', widget: boolean, default: true }
+              - { name: callLabel, label: 'Call button', widget: string }
+              - { name: inquireLabel, label: 'Inquire button', widget: string }
+          - name: lightbox
+            label: 'Photo viewer (accessibility labels)'
+            widget: object
+            collapsed: true
+            fields:
+              - { name: open, label: Open, widget: string }
+              - { name: close, label: Close, widget: string }
+              - { name: previous, label: Previous, widget: string }
+              - { name: next, label: Next, widget: string }
+
+  # ------------------------------------------------------------- settings ---
+  - name: settings
+    editor: { preview: false }
+    label: Building info
+    files:
+      - name: site
+        label: 'Name, address & contact'
+        file: src/data/site.json
+        fields:
+          - { name: name, label: 'Building name', widget: string }
+          - { name: tagline, label: 'Headline on the home page', widget: string }
+          - { name: description, label: 'Short description', widget: text }
+          - name: logo
+            label: Logo
+            widget: object
+            collapsed: true
+            hint: 'SVG or PNG. The dark version is used on light backgrounds (header), the light version on dark ones (footer). Clear both to show the name as text instead.'
+            fields:
+              - { name: dark, label: 'Dark logo file', widget: file, required: false, media_folder: /public, public_folder: / }
+              - { name: light, label: 'Light logo file', widget: file, required: false, media_folder: /public, public_folder: / }
+              - { name: compact, label: 'Compact version for the header (optional)', widget: file, required: false, media_folder: /public, public_folder: /, hint: 'A tighter crop that stays readable in a slim header. Falls back to the dark logo.' }
+              - { name: heightPx, label: 'Header logo height (pixels)', widget: number, value_type: int, min: 24, max: 120, default: 44, hint: 'The footer logo is about 3× this.' }
+          - name: unitTerm
+            label: 'What do you call a unit?'
+            widget: object
+            hint: 'Used in sentences like "15 of 24 ___ are available". e.g. residence / residences, condo / condos, home / homes'
+            fields:
+              - { name: singular, label: 'One of them', widget: string }
+              - { name: plural, label: 'Several of them', widget: string }
+          - name: formspreeId
+            label: 'Contact form ID'
+            widget: string
+            hint: 'The code from your Formspree account that makes the contact form work'
+          - { name: phone, label: 'Phone (as displayed)', widget: string }
+          - { name: phoneHref, label: 'Phone (for tap-to-call)', widget: string, hint: 'Digits only, e.g. +15550102400' }
+          - { name: email, label: Email, widget: string }
+          - name: address
+            label: Address
+            widget: object
+            fields:
+              - { name: street, label: Street, widget: string }
+              - { name: city, label: City, widget: string }
+              - { name: state, label: State, widget: string }
+              - { name: zip, label: 'ZIP code', widget: string }
+              - { name: country, label: Country, widget: string }
+          - name: geo
+            label: 'Map pin'
+            widget: object
+            fields:
+              - { name: lat, label: Latitude, widget: number, value_type: float }
+              - { name: lng, label: Longitude, widget: number, value_type: float }
+          - name: salesGallery
+            label: 'Sales gallery hours'
+            widget: object
+            fields:
+              - name: hours
+                label: Hours
+                widget: list
+                summary: '{{fields.days}} — {{fields.time}}'
+                fields:
+                  - { name: days, label: Days, widget: string }
+                  - { name: time, label: Hours, widget: string }
+          - name: brokerage
+            label: Brokerage
+            widget: object
+            fields:
+              - { name: name, label: 'Brokerage name', widget: string }
+              - { name: license, label: 'Brokerage license', widget: string }
+              - { name: agent, label: 'Agent name', widget: string }
+              - { name: agentLicense, label: 'Agent license', widget: string }
+          - name: social
+            label: 'Social links'
+            widget: list
+            summary: '{{fields.label}}'
+            fields:
+              - { name: label, label: Name, widget: string }
+              - { name: href, label: Link, widget: string }
+          - name: stats
+            label: 'Numbers strip on the home page'
+            widget: list
+            summary: '{{fields.value}} {{fields.label}}'
+            fields:
+              - { name: value, label: Number, widget: string }
+              - { name: label, label: Label, widget: string }

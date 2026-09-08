@@ -1,0 +1,6 @@
+# Only needed for direct uploads via `npx wrangler pages deploy`.
+# If you connect the Git repository to Cloudflare Pages instead, this file is
+# ignored and the dashboard build settings apply.
+name = "solarus"
+compatibility_date = "2026-08-20"
+pages_build_output_dir = "dist"

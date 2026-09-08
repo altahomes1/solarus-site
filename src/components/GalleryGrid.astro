@@ -1,0 +1,248 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import { galleryCategories, galleryItems } from '../lib/gallery';
+import shared from '../data/shared.json';
+import page from '../data/pages/gallery.json';
+
+// Build-time lightbox sources. getImage runs through the same sharp pipeline
+// as <Picture>, so these are optimized and cached alongside everything else.
+const lightboxSources = await Promise.all(
+  galleryItems.map((item) =>
+    getImage({ src: item.image, width: 1800, format: 'webp', quality: 80 }),
+  ),
+);
+---
+
+<section aria-labelledby="gallery-heading">
+  <h2 id="gallery-heading" class="sr-only">Photo gallery</h2>
+
+  <div data-gallery-filter class="flex flex-wrap items-center gap-1.5 border border-linen-300 bg-linen-50 p-1.5">
+    <button
+      type="button"
+      data-category="all"
+      aria-pressed="true"
+      class="cursor-pointer px-4 py-2.5 text-[0.7rem] tracking-[0.12em] text-ink-500 uppercase transition-colors hover:text-ink-900 aria-pressed:bg-ink-900 aria-pressed:text-linen-50"
+    >
+      {page.filterAll}
+    </button>
+    {
+      galleryCategories.map((category) => (
+        <button
+          type="button"
+          data-category={category}
+          aria-pressed="false"
+          class="cursor-pointer px-4 py-2.5 text-[0.7rem] tracking-[0.12em] text-ink-500 uppercase transition-colors hover:text-ink-900 aria-pressed:bg-ink-900 aria-pressed:text-linen-50"
+        >
+          {category}
+        </button>
+      ))
+    }
+  </div>
+
+  <div data-gallery-grid class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      galleryItems.map((item, index) => (
+        <figure
+          data-gallery-item
+          data-category={item.category}
+          class:list={['group relative', item.wide && 'lg:col-span-2']}
+        >
+          <button
+            type="button"
+            data-lightbox-open
+            data-index={index}
+            data-full={lightboxSources[index].src}
+            data-alt={item.alt}
+            data-caption={item.caption}
+            class="block w-full cursor-zoom-in overflow-hidden bg-linen-200"
+          >
+            <Picture
+              src={item.image}
+              alt={item.alt}
+              formats={['avif', 'webp']}
+              fallbackFormat="jpg"
+              widths={[400, 640, 900, 1280]}
+              sizes={
+                item.wide
+                  ? '(min-width: 1024px) 62vw, (min-width: 640px) 48vw, 92vw'
+                  : '(min-width: 1024px) 31vw, (min-width: 640px) 48vw, 92vw'
+              }
+              loading={index < 3 ? 'eager' : 'lazy'}
+              decoding="async"
+              class:list={[
+                'w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]',
+                item.wide ? 'aspect-3/2' : 'aspect-4/5 sm:aspect-4/3',
+              ]}
+            />
+            <span class="sr-only">{shared.lightbox.open}</span>
+          </button>
+
+          <figcaption class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-950/75 to-transparent p-4 pt-10 text-sm text-linen-100 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-within:opacity-100">
+            {item.caption}
+          </figcaption>
+        </figure>
+      ))
+    }
+  </div>
+
+  <p data-gallery-empty hidden class="border border-linen-300 bg-linen-100 px-6 py-16 text-center text-ink-500">
+    {page.emptyMessage}
+  </p>
+</section>
+
+<!-- Lightbox -->
+<dialog
+  id="lightbox"
+  aria-label="Image viewer"
+  class="m-0 h-full max-h-none w-full max-w-none bg-ink-950/96 p-0 backdrop:bg-ink-950/80"
+>
+  <div class="flex h-full flex-col">
+    <div class="flex items-center justify-between px-5 py-4 sm:px-8">
+      <p data-lightbox-counter class="text-[0.7rem] tracking-widest text-ink-300 uppercase"></p>
+      <button
+        type="button"
+        data-lightbox-close
+        class="-mr-2 inline-flex h-11 w-11 cursor-pointer items-center justify-center text-linen-100 transition-colors hover:text-brass-300"
+      >
+        <span class="sr-only">{shared.lightbox.close}</span>
+        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true">
+          <path d="M4 4l12 12M16 4L4 16" stroke-linecap="square"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="relative flex min-h-0 flex-1 items-center justify-center px-3 sm:px-16">
+      <button
+        type="button"
+        data-lightbox-prev
+        class="absolute left-1 z-10 inline-flex h-12 w-12 cursor-pointer items-center justify-center bg-ink-950/50 text-linen-100 transition-colors hover:text-brass-300 sm:left-4"
+      >
+        <span class="sr-only">{shared.lightbox.previous}</span>
+        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true">
+          <path d="M12.5 3L5.5 10l7 7" stroke-linecap="square"></path>
+        </svg>
+      </button>
+
+      <img data-lightbox-image src="" alt="" class="max-h-full max-w-full object-contain" />
+
+      <button
+        type="button"
+        data-lightbox-next
+        class="absolute right-1 z-10 inline-flex h-12 w-12 cursor-pointer items-center justify-center bg-ink-950/50 text-linen-100 transition-colors hover:text-brass-300 sm:right-4"
+      >
+        <span class="sr-only">{shared.lightbox.next}</span>
+        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true">
+          <path d="M7.5 3l7 7-7 7" stroke-linecap="square"></path>
+        </svg>
+      </button>
+    </div>
+
+    <p data-lightbox-caption class="px-5 py-6 text-center text-sm text-linen-200 sm:px-8"></p>
+  </div>
+</dialog>
+
+<style>
+  /* The lightbox needs JS; without it the thumbnails simply stay static. */
+  :global(.no-js) [data-gallery-filter],
+  :global(.no-js) #lightbox {
+    display: none;
+  }
+</style>
+
+<script>
+  const filterButtons = Array.from(
+    document.querySelectorAll<HTMLButtonElement>('[data-gallery-filter] button'),
+  );
+  const figures = Array.from(document.querySelectorAll<HTMLElement>('[data-gallery-item]'));
+  const emptyMessage = document.querySelector<HTMLElement>('[data-gallery-empty]');
+
+  for (const button of filterButtons) {
+    button.addEventListener('click', () => {
+      const category = button.dataset.category ?? 'all';
+      filterButtons.forEach((b) =>
+        b.setAttribute('aria-pressed', String(b.dataset.category === category)),
+      );
+      let visible = 0;
+      for (const figure of figures) {
+        const match = category === 'all' || figure.dataset.category === category;
+        figure.hidden = !match;
+        if (match) visible += 1;
+      }
+      if (emptyMessage) emptyMessage.hidden = visible > 0;
+    });
+  }
+
+  // ---- Lightbox ----
+  const dialog = document.querySelector<HTMLDialogElement>('#lightbox');
+  const image = document.querySelector<HTMLImageElement>('[data-lightbox-image]');
+  const caption = document.querySelector<HTMLElement>('[data-lightbox-caption]');
+  const counter = document.querySelector<HTMLElement>('[data-lightbox-counter]');
+  const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-lightbox-open]'));
+
+  if (dialog && image && triggers.length) {
+    let current = 0;
+    let lastFocused: HTMLElement | null = null;
+
+    // Only cycle through the images currently passing the category filter.
+    const activeTriggers = () =>
+      triggers.filter((t) => !t.closest<HTMLElement>('[data-gallery-item]')?.hidden);
+
+    function show(index: number) {
+      const list = activeTriggers();
+      if (!list.length) return;
+      const wrapped = (index + list.length) % list.length;
+      const trigger = list[wrapped];
+
+      current = Number(trigger.dataset.index ?? 0);
+      image!.src = trigger.dataset.full ?? '';
+      image!.alt = trigger.dataset.alt ?? '';
+      if (caption) caption.textContent = trigger.dataset.caption ?? '';
+      if (counter) counter.textContent = `${wrapped + 1} / ${list.length}`;
+    }
+
+    function step(delta: number) {
+      const list = activeTriggers();
+      const position = list.findIndex((t) => Number(t.dataset.index) === current);
+      show(position + delta);
+    }
+
+    for (const trigger of triggers) {
+      trigger.addEventListener('click', () => {
+        lastFocused = trigger;
+        const list = activeTriggers();
+        show(list.indexOf(trigger));
+        dialog.showModal();
+        document.body.style.overflow = 'hidden';
+      });
+    }
+
+    const close = () => {
+      dialog.close();
+    };
+
+    dialog.addEventListener('close', () => {
+      document.body.style.overflow = '';
+      lastFocused?.focus();
+    });
+
+    document.querySelector('[data-lightbox-close]')?.addEventListener('click', close);
+    document.querySelector('[data-lightbox-prev]')?.addEventListener('click', () => step(-1));
+    document.querySelector('[data-lightbox-next]')?.addEventListener('click', () => step(1));
+
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        step(1);
+      }
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        step(-1);
+      }
+    });
+
+    // Clicking the backdrop (outside the image column) dismisses the viewer.
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) close();
+    });
+  }
+</script>

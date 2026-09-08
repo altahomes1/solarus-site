@@ -1,0 +1,21 @@
+{
+  "unit": "PH2",
+  "floor": "Penthouse",
+  "planId": "b",
+  "floorPlan": "Penthouse",
+  "sqft": 3000,
+  "beds": 3,
+  "baths": 3,
+  "listingType": "sale",
+  "price": 0,
+  "status": "available",
+  "exposure": "Gulf",
+  "availableOn": null,
+  "features": [
+    "Penthouse level",
+    "Gulf views",
+    "Private terrace"
+  ],
+  "exteriorSqft": 0,
+  "planPdf": ""
+}

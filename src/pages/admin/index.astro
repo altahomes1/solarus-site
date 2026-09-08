@@ -1,0 +1,24 @@
+---
+// The editing dashboard. Served as an Astro page (rather than a plain file in
+// public/) so that /admin works both on the dev server and once deployed.
+// The settings it reads live in public/admin/config.yml.
+import site from '../../data/site.json';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{site.name} — Site Editor</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Absolute path so the settings load whether the URL is /admin or /admin/ -->
+    <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url" />
+  </head>
+  <body>
+    <!-- The whole dashboard is this one script. It reads config.yml and
+         builds the editing forms from it. -->
+    <script is:inline src="https://unpkg.com/decap-cms@^3.9.0/dist/decap-cms.js"></script>
+  </body>
+</html>

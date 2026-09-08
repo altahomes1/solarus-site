@@ -1,0 +1,20 @@
+{
+  "unit": "207",
+  "floor": "2",
+  "planId": "a",
+  "floorPlan": "Residence",
+  "sqft": 2500,
+  "beds": 3,
+  "baths": 2,
+  "listingType": "sale",
+  "price": 0,
+  "status": "available",
+  "exposure": "Gulf",
+  "availableOn": null,
+  "features": [
+    "Gulf views",
+    "Balcony"
+  ],
+  "exteriorSqft": 0,
+  "planPdf": ""
+}

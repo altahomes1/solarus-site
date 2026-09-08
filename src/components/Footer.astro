@@ -1,0 +1,92 @@
+---
+import site from '../data/site.json';
+import shared from '../data/shared.json';
+
+const year = new Date().getFullYear();
+
+const exploreLinks = [
+  { href: '/availability', label: shared.nav.availability },
+  { href: '/amenities', label: shared.nav.amenities },
+  { href: '/gallery', label: shared.nav.gallery },
+  { href: '/visionaries', label: shared.nav.visionaries },
+  { href: '/vision', label: shared.nav.vision },
+  { href: '/contact', label: shared.nav.contact },
+];
+---
+
+<footer class="mt-24 border-t border-linen-300 bg-ink-900 text-linen-200">
+  <div class="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
+    <div class="grid gap-12 md:grid-cols-12">
+      <div class="md:col-span-5">
+        {
+          site.logo?.light ? (
+            <img src={site.logo.light} alt={site.name} class="w-auto" style={`height:${Math.round((site.logo.heightPx ?? 44) * 2.8)}px`} />
+          ) : (
+            <p class="font-display text-3xl text-linen-50">{site.name}</p>
+          )
+        }
+        <div class="rule mt-5 mb-5"></div>
+        <p class="max-w-sm text-sm leading-relaxed text-ink-300">{site.description}</p>
+      </div>
+
+      <div class="md:col-span-3">
+        <h2 class="eyebrow text-brass-300">{shared.footer.salesGalleryTitle}</h2>
+        <address class="mt-5 text-sm leading-relaxed text-ink-300 not-italic">
+          {site.address.street}<br />
+          {site.address.city}, {site.address.state} {site.address.zip}
+        </address>
+        <dl class="mt-5 space-y-1.5 text-sm text-ink-300">
+          {
+            site.salesGallery.hours.map((slot) => (
+              <div class="flex justify-between gap-4 border-b border-linen-50/8 pb-1.5">
+                <dt>{slot.days}</dt>
+                <dd class="text-right text-linen-200">{slot.time}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+
+      <div class="md:col-span-2">
+        <h2 class="eyebrow text-brass-300">{shared.footer.exploreTitle}</h2>
+        <ul class="mt-3 space-y-0.5 text-sm">
+          {
+            exploreLinks.map((link) => (
+              <li>
+                <a href={link.href} class="inline-block py-2 text-ink-300 transition-colors hover:text-linen-50">{link.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="md:col-span-2">
+        <h2 class="eyebrow text-brass-300">{shared.footer.enquiriesTitle}</h2>
+        <ul class="mt-3 space-y-0.5 text-sm">
+          <li>
+            <a href={`tel:${site.phoneHref}`} class="inline-block py-2 text-ink-300 transition-colors hover:text-linen-50">{site.phone}</a>
+          </li>
+          <li>
+            <a href={`mailto:${site.email}`} class="inline-block break-all py-2 text-ink-300 transition-colors hover:text-linen-50">{site.email}</a>
+          </li>
+          {
+            site.social.map((item) => (
+              <li>
+                <a href={item.href} rel="noopener noreferrer" target="_blank" class="inline-block py-2 text-ink-300 transition-colors hover:text-linen-50">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-14 flex flex-col gap-6 border-t border-linen-50/10 pt-8 text-xs leading-relaxed text-ink-400 lg:flex-row lg:items-start lg:justify-between">
+      <p>&copy; {year} {site.name}. {shared.footer.rights}</p>
+      <p class="max-w-2xl lg:text-right">
+        {shared.footer.marketedBy} {site.brokerage.name}{site.brokerage.license ? ` \u00b7 ${site.brokerage.license}` : ''}. {shared.footer.legal}
+      </p>
+    </div>
+  </div>
+</footer>

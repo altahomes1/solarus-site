@@ -1,0 +1,40 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import SectionHeading from './SectionHeading.astro';
+
+// Page header. With an image (chosen in the dashboard) it becomes a full-bleed
+// photographic opener in the style of the Miami reference sites; without one it
+// falls back to the quiet linen header.
+interface Props {
+  eyebrow: string;
+  title: string;
+  intro?: string;
+  image?: string;
+  imageAlt?: string;
+}
+const { eyebrow, title, intro, image = '', imageAlt = '' } = Astro.props;
+
+const library = import.meta.glob<{ default: ImageMetadata }>('/src/assets/**/*.{jpg,jpeg,png,webp}', { eager: true });
+const photo = image ? library[image]?.default : undefined;
+---
+
+{
+  photo ? (
+    <section class="relative isolate flex min-h-[48svh] flex-col justify-end overflow-hidden bg-ink-900 sm:min-h-[62svh]">
+      <Image src={photo} alt={imageAlt} widths={[640, 1024, 1600, 2048]} sizes="100vw" loading="eager" fetchpriority="high" class="absolute inset-0 -z-10 h-full w-full object-cover" />
+      <div class="absolute inset-0 -z-10 bg-gradient-to-t from-ink-950/95 via-ink-950/65 to-ink-950/25"></div>
+      <div class="mx-auto w-full max-w-7xl px-5 pt-24 pb-9 sm:px-8 sm:pt-32 sm:pb-20">
+        <SectionHeading as="h1" tone="light" eyebrow={eyebrow} title={title} intro={intro} />
+        <slot />
+      </div>
+    </section>
+  ) : (
+    <section class="border-b border-linen-300 bg-linen-100">
+      <div class="mx-auto max-w-7xl px-5 pt-16 pb-14 sm:px-8 sm:pt-24 sm:pb-20">
+        <SectionHeading as="h1" eyebrow={eyebrow} title={title} intro={intro} />
+        <slot />
+      </div>
+    </section>
+  )
+}

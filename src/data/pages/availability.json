@@ -1,0 +1,67 @@
+{
+  "seoDescription": "Solarus residences and penthouses on Galveston Beach — two- and three-bedroom homes from 947 to 3,000 square feet.",
+  "header": {
+    "eyebrow": "Residences",
+    "title": "Discover our residences",
+    "intro": "Solarus sets a new standard for luxury, functionality and sustainability. With state-of-the-art amenities and expansive views of the Gulf, our residences bring a new way of living to the Texas coastline.",
+    "image": "/src/assets/gallery/02-living.jpg",
+    "imageAlt": "A residence living room with Gulf views"
+  },
+  "tiles": {
+    "total": "Residences",
+    "available": "Available now",
+    "forSale": "For sale",
+    "forLease": "For lease"
+  },
+  "filters": {
+    "offeringLabel": "Offering",
+    "offeringAll": "All",
+    "offeringSale": "For sale",
+    "offeringLease": "For lease",
+    "bedroomsLabel": "Bedrooms",
+    "bedroomsAny": "Any",
+    "studio": "Studio",
+    "oneBed": "1 bed",
+    "twoBed": "2 bed",
+    "threePlusBed": "3+ bed",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Residence or penthouse",
+    "statusLabel": "Status",
+    "statusAll": "All",
+    "statusAvailable": "Available",
+    "statusPending": "Pending",
+    "statusSold": "Sold",
+    "sortLabel": "Sort by",
+    "sortRecommended": "Recommended",
+    "sortPriceAsc": "Price: low to high",
+    "sortPriceDesc": "Price: high to low",
+    "sortSizeDesc": "Size: largest first",
+    "sortSizeAsc": "Size: smallest first",
+    "sortUnit": "Residence number",
+    "resultOf": "of",
+    "resetLabel": "Reset"
+  },
+  "emptyState": {
+    "title": "No residences match those filters",
+    "body": "Try widening your search, or inquire with the sales team — we are happy to walk you through every plan.",
+    "clearButton": "Clear filters",
+    "contactButton": "Inquire"
+  },
+  "plans": {
+    "eyebrow": "Floor plans",
+    "title": "Residences and penthouses",
+    "intro": "Floor plan drawings are being finalized. Square footage is approximate.",
+    "columns": {
+      "plan": "Plan",
+      "beds": "Beds",
+      "baths": "Baths",
+      "size": "Approx. size",
+      "inBuilding": "In building",
+      "available": "Available"
+    },
+    "waitlist": "Waitlist",
+    "studio": "Studio",
+    "tbd": "TBD"
+  },
+  "disclosure": "Square footage is approximate. Images and plans are illustrative and subject to change. Prices and availability are subject to change without notice."
+}

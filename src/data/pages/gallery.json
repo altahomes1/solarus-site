@@ -1,0 +1,18 @@
+{
+  "seoDescription": "Solarus on Galveston Beach — the residences, the pools, the amenities and the shoreline.",
+  "header": {
+    "eyebrow": "Gallery",
+    "title": "The residences",
+    "intro": "Solarus — the architecture, the residences and the amenity spaces.",
+    "image": "/src/assets/gallery/09-penthouse-pool-ocean.jpg",
+    "imageAlt": "The penthouse pool with the Gulf beyond"
+  },
+  "filterAll": "All",
+  "emptyMessage": "No images in this category yet.",
+  "cta": {
+    "eyebrow": "See it properly",
+    "title": "Images only go so far",
+    "intro": "Inquire to learn more about the residences and the vision behind them.",
+    "button": "Inquire"
+  }
+}

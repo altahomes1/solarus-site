@@ -1,0 +1,42 @@
+{
+  "seoDescription": "The team behind Solarus — concept, finance, architecture and planning.",
+  "header": {
+    "eyebrow": "Visionaries",
+    "title": "The people behind Solarus",
+    "intro": "A skilled and dedicated team of visionaries created the concept for Solarus.",
+    "image": "",
+    "imageAlt": ""
+  },
+  "people": [
+    {
+      "name": "Galen Dru Kahlenberg",
+      "role": "Founder & concept creation",
+      "photo": "/src/assets/team/galen-kahlenberg.png",
+      "bio": "Galen Dru Kahlenberg is a lifelong investor and entrepreneur with a focus on property development in Texas. He founded Alta Homes, ClearLake Asset Management and Orbit Properties, The Galen Foundation for conservation, and Humanity Squared to assist struggling homeowners and renters."
+    },
+    {
+      "name": "Dru Kahlenberg",
+      "role": "Project lead",
+      "photo": "/src/assets/team/dru-kahlenberg.jpg",
+      "bio": "Dru Kahlenberg leads the Solarus project day to day — steering design, construction and sales from first sketch to closing table. Raised around his father's developments and the CEO of Alta Homes, he carries the family's vision of mindful coastal living into its next generation."
+    },
+    {
+      "name": "Laura Kahlenberg",
+      "role": "Concept creation and CFO",
+      "photo": "/src/assets/team/laura-kahlenberg.jpg",
+      "bio": "Laura Kahlenberg is highly motivated by her accounting expertise, both domestically and internationally, and has an exceptional aptitude for innovative solutions. She inspired The Galen Foundation and leads Solarus' conservation initiatives."
+    },
+    {
+      "name": "Andre Landon, AIA",
+      "role": "Architect",
+      "photo": "/src/assets/team/andre-landon.png",
+      "bio": "As Design Director and Principal of EDI, Andre leads the design process on luxury hotels, historical renovations, boutique hotels, restaurants and high-rise condominiums — ensuring exterior and interior elements work harmoniously to create memorable experiences."
+    },
+    {
+      "name": "Patricia Knudson Joiner, FAICP",
+      "role": "Planning director",
+      "photo": "/src/assets/team/patricia-joiner.jpg",
+      "bio": "Over the past 41 years, Patricia \"Patti\" Knudson Joiner, FAICP, has built a reputation for creating and implementing innovative planning standards. Her work has generated over $14 billion in new taxable value across the Texas Gulf Coast region."
+    }
+  ]
+}

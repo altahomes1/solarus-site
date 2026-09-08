@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+
+# AI assistants that answer buyer questions may read the site.
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+
+# Bulk training-data harvesters are not welcome.
+User-agent: CCBot
+User-agent: Bytespider
+User-agent: Diffbot
+User-agent: ImagesiftBot
+Disallow: /
+
+Sitemap: https://www.solarustower.com/sitemap-index.xml

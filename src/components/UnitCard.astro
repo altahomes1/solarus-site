@@ -1,0 +1,242 @@
+---
+import { Image } from 'astro:assets';
+import shared from '../data/shared.json';
+import site from '../data/site.json';
+import {
+  units as allUnits,
+  bathLabel,
+  bedBucket,
+  bedLabel,
+  formatAvailableOn,
+  formatPrice,
+  formatSqft,
+  formatSqftValue,
+  planImage,
+  statusMeta,
+  type Unit,
+} from '../lib/units';
+
+interface Props {
+  unit: Unit;
+  /** Above-the-fold cards load eagerly; the rest stay lazy. */
+  eager?: boolean;
+}
+
+const { unit, eager = false } = Astro.props;
+const t = shared.unitCard;
+
+const status = statusMeta[unit.status];
+const image = planImage(unit.planId);
+const isSold = unit.status === 'sold';
+
+// Show the sale/lease corner badge only when the building offers both.
+const hasBothOfferings = new Set(allUnits.map((u) => u.listingType)).size > 1;
+
+const exterior = unit.exteriorSqft ?? 0;
+const total = unit.sqft > 0 ? unit.sqft + exterior : 0;
+const dialogId = `plan-${unit.unit.replace(/[^a-z0-9]/gi, '').toLowerCase()}`;
+
+// Everything the text filter should match against, pre-flattened.
+const searchIndex = [
+  unit.unit,
+  unit.floorPlan,
+  unit.exposure,
+  bedLabel(unit.beds),
+  `floor ${unit.floor}`,
+  ...unit.features,
+].join(' ').toLowerCase();
+---
+
+<article
+  data-unit-card
+  data-unit={unit.unit}
+  data-status={unit.status}
+  data-type={unit.listingType}
+  data-beds={bedBucket(unit.beds)}
+  data-price={unit.price}
+  data-sqft={unit.sqft}
+  data-search={searchIndex}
+  class:list={[
+    'group flex flex-col border border-linen-300 bg-linen-50 transition-all duration-300',
+    'hover:-translate-y-0.5 hover:border-brass-300 hover:shadow-[0_12px_40px_-12px_rgba(22,22,20,0.18)]',
+    isSold && 'opacity-75',
+  ]}
+>
+  <div class="relative overflow-hidden bg-linen-200">
+    <Image
+      src={image}
+      alt={`${unit.floorPlan} floor plan for ${site.unitTerm.singular} ${unit.unit}`}
+      widths={[400, 600, 800]}
+      sizes="(min-width: 1280px) 380px, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 92vw"
+      loading={eager ? 'eager' : 'lazy'}
+      class="aspect-4/3 w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+    />
+
+    <span
+      class:list={[
+        'absolute top-3 left-3 inline-flex items-center gap-1.5 bg-linen-50/95 px-3 py-1.5 text-[0.65rem] font-medium tracking-widest uppercase ring-1 ring-inset backdrop-blur-sm',
+        status.classes,
+      ]}
+    >
+      <span class:list={['h-1.5 w-1.5 rounded-full', status.dot]} aria-hidden="true"></span>
+      {status.label}
+    </span>
+
+    {
+      hasBothOfferings && (
+        <span class="absolute top-3 right-3 bg-ink-900/85 px-3 py-1.5 text-[0.65rem] tracking-widest text-linen-50 uppercase backdrop-blur-sm">
+          {unit.listingType === 'sale' ? t.forSale : t.forLease}
+        </span>
+      )
+    }
+  </div>
+
+  <div class="flex flex-1 flex-col p-6">
+    <div class="flex items-baseline justify-between gap-3">
+      <h3 class="font-display text-3xl leading-none text-ink-900">
+        <span class="sr-only">{site.unitTerm.singular} </span>{unit.unit}
+      </h3>
+      <p class="text-right text-lg font-medium text-ink-900">{formatPrice(unit)}</p>
+    </div>
+
+    <p class="mt-2 text-sm text-ink-500">{unit.floorPlan}</p>
+
+    <dl class="mt-5 grid grid-cols-3 gap-px border-y border-linen-300 bg-linen-300 text-center">
+      <div class="bg-linen-50 px-2 py-3">
+        <dt class="text-[0.6rem] tracking-widest text-ink-400 uppercase">{t.beds}</dt>
+        <dd class="mt-1 text-sm text-ink-800">{bedLabel(unit.beds)}</dd>
+      </div>
+      <div class="bg-linen-50 px-2 py-3">
+        <dt class="text-[0.6rem] tracking-widest text-ink-400 uppercase">{t.baths}</dt>
+        <dd class="mt-1 text-sm text-ink-800">{bathLabel(unit.baths)}</dd>
+      </div>
+      <div class="bg-linen-50 px-2 py-3">
+        <dt class="text-[0.6rem] tracking-widest text-ink-400 uppercase">{t.size}</dt>
+        <dd class="mt-1 text-sm text-ink-800">{formatSqftValue(unit.sqft)}</dd>
+      </div>
+    </dl>
+
+    <ul class="mt-5 space-y-2 text-sm text-ink-500">
+      <li class="flex justify-between gap-4">
+        <span class="text-ink-400">{t.floor}</span>
+        <span class="text-ink-700">{unit.floor}</span>
+      </li>
+      <li class="flex justify-between gap-4">
+        <span class="text-ink-400">{t.exposure}</span>
+        <span class="text-ink-700">{unit.exposure}</span>
+      </li>
+      <li class="flex justify-between gap-4">
+        <span class="text-ink-400">{isSold ? t.status : t.available}</span>
+        <span class="text-ink-700">{isSold ? t.closed : formatAvailableOn(unit.availableOn)}</span>
+      </li>
+    </ul>
+
+    {
+      exterior > 0 && (
+        <ul class="mt-3 grid grid-cols-3 gap-px border-y border-linen-300 bg-linen-300 text-center text-xs">
+          <li class="bg-linen-50 px-2 py-2"><span class="block text-[0.55rem] tracking-widest text-ink-400 uppercase">{t.interior}</span>{formatSqftValue(unit.sqft)}</li>
+          <li class="bg-linen-50 px-2 py-2"><span class="block text-[0.55rem] tracking-widest text-ink-400 uppercase">{t.exterior}</span>{formatSqftValue(exterior)}</li>
+          <li class="bg-linen-50 px-2 py-2"><span class="block text-[0.55rem] tracking-widest text-ink-400 uppercase">{t.total}</span>{formatSqftValue(total)}</li>
+        </ul>
+      )
+    }
+
+    <p class="sr-only">{formatSqft(unit.sqft)}</p>
+
+    <ul class="mt-5 flex flex-wrap gap-1.5">
+      {
+        unit.features.slice(0, 3).map((feature) => (
+          <li class="border border-linen-300 px-2.5 py-1 text-[0.7rem] text-ink-500">{feature}</li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-6 flex-1"></div>
+
+    <div class="grid grid-cols-2 gap-2">
+      <button
+        type="button"
+        data-plan-open={dialogId}
+        class="cursor-pointer border border-linen-300 px-4 py-3.5 text-center text-[0.7rem] tracking-widest text-ink-700 uppercase transition-colors hover:border-ink-900 hover:text-ink-900"
+      >
+        {t.viewPlan}
+      </button>
+      {
+        isSold ? (
+          <p class="border border-linen-300 bg-linen-100 px-4 py-3.5 text-center text-[0.7rem] tracking-widest text-ink-400 uppercase">
+            {t.noLongerAvailable}
+          </p>
+        ) : (
+          <a
+            href={`/contact?unit=${encodeURIComponent(unit.unit)}`}
+            class="border border-ink-900 px-4 py-3.5 text-center text-[0.7rem] tracking-widest text-ink-900 uppercase transition-colors hover:bg-ink-900 hover:text-linen-50"
+          >
+            {t.enquire} {unit.unit}
+          </a>
+        )
+      }
+    </div>
+  </div>
+
+  <!-- Floor-plan viewer -->
+  <dialog id={dialogId} aria-label={`${unit.floorPlan} ${unit.unit}`} class="m-0 h-full max-h-none w-full max-w-none border-0 bg-linen-50 p-0 text-ink-800 backdrop:bg-ink-950/70 lg:m-auto lg:h-auto lg:w-[min(96vw,64rem)] lg:border lg:border-linen-300">
+    <div class="grid min-h-full lg:grid-cols-12">
+      <div class="bg-linen-200 lg:col-span-8">
+        <Image src={image} alt={`${unit.floorPlan} floor plan for ${site.unitTerm.singular} ${unit.unit}`} widths={[800, 1200, 1600]} sizes="(min-width: 1024px) 60vw, 96vw" loading="eager" class="h-full max-h-[60svh] w-full object-contain lg:max-h-none" />
+      </div>
+      <div class="flex flex-col p-7 lg:col-span-4">
+        <p class="eyebrow">{unit.floorPlan}</p>
+        <h3 class="mt-2 font-display text-4xl text-ink-900">{unit.unit}</h3>
+        <p class="mt-1 text-lg text-ink-900">{formatPrice(unit)}</p>
+        <dl class="mt-6 space-y-2 text-sm">
+          <div class="flex justify-between border-b border-linen-300 pb-2"><dt class="text-ink-400">{t.beds}</dt><dd>{bedLabel(unit.beds)}</dd></div>
+          <div class="flex justify-between border-b border-linen-300 pb-2"><dt class="text-ink-400">{t.baths}</dt><dd>{bathLabel(unit.baths)}</dd></div>
+          <div class="flex justify-between border-b border-linen-300 pb-2"><dt class="text-ink-400">{t.interior}</dt><dd>{formatSqftValue(unit.sqft)} {unit.sqft > 0 && t.sqft}</dd></div>
+          {exterior > 0 && <div class="flex justify-between border-b border-linen-300 pb-2"><dt class="text-ink-400">{t.exterior}</dt><dd>{formatSqftValue(exterior)} {t.sqft}</dd></div>}
+          {exterior > 0 && <div class="flex justify-between border-b border-linen-300 pb-2"><dt class="text-ink-400">{t.total}</dt><dd>{formatSqftValue(total)} {t.sqft}</dd></div>}
+          <div class="flex justify-between border-b border-linen-300 pb-2"><dt class="text-ink-400">{t.floor}</dt><dd>{unit.floor}</dd></div>
+          <div class="flex justify-between border-b border-linen-300 pb-2"><dt class="text-ink-400">{t.exposure}</dt><dd>{unit.exposure}</dd></div>
+        </dl>
+        <ul class="mt-5 flex flex-wrap gap-1.5">
+          {unit.features.map((feature) => <li class="border border-linen-300 px-2.5 py-1 text-[0.7rem] text-ink-500">{feature}</li>)}
+        </ul>
+        <div class="mt-auto grid gap-2 pt-8">
+          {
+            unit.planPdf && (
+              <a href={unit.planPdf} download class="border border-ink-900 px-4 py-3.5 text-center text-[0.7rem] tracking-widest text-ink-900 uppercase transition-colors hover:bg-ink-900 hover:text-linen-50">
+                {t.downloadPlan}
+              </a>
+            )
+          }
+          {
+            !isSold && (
+              <a href={`/contact?unit=${encodeURIComponent(unit.unit)}`} class="bg-ink-900 px-4 py-3.5 text-center text-[0.7rem] tracking-widest text-linen-50 uppercase transition-colors hover:bg-brass-600">
+                {t.enquire} {unit.unit}
+              </a>
+            )
+          }
+          <button type="button" data-plan-close class="cursor-pointer px-4 py-3 text-[0.7rem] tracking-widest text-ink-500 uppercase transition-colors hover:text-ink-900">
+            {t.closePlan}
+          </button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+</article>
+
+<script>
+  // One tiny handler for every card on the page.
+  document.querySelectorAll<HTMLButtonElement>('[data-plan-open]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const dialog = document.getElementById(button.dataset.planOpen ?? '') as HTMLDialogElement | null;
+      if (!dialog) return;
+      dialog.showModal();
+      document.body.style.overflow = 'hidden';
+    });
+  });
+  document.querySelectorAll<HTMLDialogElement>('dialog[id^="plan-"]').forEach((dialog) => {
+    dialog.addEventListener('close', () => { document.body.style.overflow = ''; });
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+    dialog.querySelector('[data-plan-close]')?.addEventListener('click', () => dialog.close());
+  });
+</script>

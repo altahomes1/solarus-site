@@ -1,0 +1,33 @@
+{
+  "seoDescription": "The vision for Solarus: a modern, sophisticated condominium embedded into the Galveston seaside.",
+  "header": {
+    "eyebrow": "The vision",
+    "title": "Immerse yourself in a world where meticulous design, breathtaking views and opulent amenities converge to redefine coastal living.",
+    "image": "/src/assets/hero.jpg",
+    "imageAlt": "Solarus from the beach"
+  },
+  "paragraphs": [
+    "Solarus achieves a fusion of glass, concrete, wood and the natural oceanfront seascape, creating a modern, sophisticated condominium embedded into the seaside beachfront environment.",
+    "With the help of our skilled and dedicated team of visionaries, we have created a concept for Solarus that will offer you and your guests luxury condominiums with a creative fusion of minimalist design and breathtaking architectural style.",
+    "At Solarus we create a secure, technologically advanced and unique experience, surrounding residents with an environment that elevates and exhilarates the senses, with contrasting elements of natural beauty and angular, groundbreaking architecture.",
+    "Our goal is simple: to achieve a higher level of quality, and create a forward-thinking resort with stunning architecture for a new generation of living, unique to Galveston.",
+    "Come with us, feel the vision brought to life, enjoy Galveston, and feel yourself let go of the noise of life."
+  ],
+  "blocks": [
+    {
+      "number": "01",
+      "title": "Mission",
+      "body": "Every time Laura and I crossed over the Causeway on our way into Galveston, we found a weight being lifted, our minds starting to clear, like a fog lifting at morning sunrise. The stress of life faded a bit as we felt a calm moving into our thoughts.\n\nGalveston has deep historical roots, and we think generations have felt that same inner peace and warmth when experiencing its beauty — that peaceful, soft sea breeze and the waves that seem to never end.\n\nAs we walked the Solarus property site and envisioned its existence, we seemed to see our own place in life. The Galveston shoreline gave us an opportunity to reflect on our path in the sand, feel the warmth of the sun and the sound of waves, and walk by the gentle flowing dunes."
+    },
+    {
+      "number": "02",
+      "title": "The inspiration",
+      "body": ""
+    }
+  ],
+  "cta": {
+    "eyebrow": "Visionaries",
+    "title": "Meet the team behind the vision",
+    "button": "The visionaries"
+  }
+}

@@ -1,0 +1,166 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import PageHero from '../components/PageHero.astro';
+import site from '../data/site.json';
+import locationData from '../data/pages/location.json';
+import neighborhood from '../assets/location/neighborhood.jpg';
+
+// Empty lists in the JSON would otherwise be typed as "never[]".
+interface Score { value: string; label: string; note: string }
+interface Place { name: string; detail: string; minutes: number }
+interface Group { title: string; items: Place[] }
+interface Commute { destination: string; mode: string; time: string }
+interface Landmark { eyebrow: string; title: string; body: string; image: string; imageAlt: string }
+interface LocationPage {
+  seoDescription: string;
+  landmark?: Landmark;
+  header: { eyebrow: string; title: string; intro: string; image: string; imageAlt: string };
+  directionsButton: string;
+  mapCredit: string;
+  scores: Score[];
+  neighborhoodSection: { eyebrow: string; title: string };
+  neighborhoodGroups: Group[];
+  minutesLabel: string;
+  commuteSection: { eyebrow: string; title: string; intro: string };
+  commutes: Commute[];
+}
+const page = locationData as unknown as LocationPage;
+const library = import.meta.glob<{ default: ImageMetadata }>('/src/assets/**/*.{jpg,jpeg,png,webp}', { eager: true });
+const landmarkImage = page.landmark?.image ? library[page.landmark.image]?.default : undefined;
+
+const { lat, lng } = site.geo;
+const delta = 0.006;
+const bbox = [lng - delta, lat - delta / 1.8, lng + delta, lat + delta / 1.8].join('%2C');
+
+// OpenStreetMap needs no API key. To use Google Maps instead, swap this URL
+// for a Maps Embed API src.
+const mapEmbed = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lng}`;
+
+const fullAddress = `${site.address.street}, ${site.address.city}, ${site.address.state} ${site.address.zip}`;
+const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
+---
+
+<BaseLayout title={page.header.eyebrow} description={page.seoDescription}>
+  <PageHero eyebrow={page.header.eyebrow} title={page.header.title} intro={page.header.intro} image={page.header.image} imageAlt={page.header.imageAlt}>
+      <address class:list={["mt-8 font-display text-2xl not-italic sm:text-3xl", page.header.image ? "text-linen-50" : "text-ink-800"]}>
+        {site.address.street}<br />
+        {site.address.city}, {site.address.state} {site.address.zip}
+      </address>
+      <a
+        href={directionsUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class:list={["mt-6 inline-block border px-6 py-3.5 text-[0.7rem] tracking-widest uppercase transition-colors", page.header.image ? "border-linen-50/50 text-linen-50 hover:bg-linen-50/10" : "border-ink-900 text-ink-900 hover:bg-ink-900 hover:text-linen-50"]}
+      >
+        {page.directionsButton}
+      </a>
+  </PageHero>
+
+  <!-- Landmark -->
+  {
+    page.landmark && (page.landmark.title || landmarkImage) && (
+      <section class="mx-auto max-w-7xl px-5 pt-16 sm:px-8 sm:pt-24">
+        <div class="reveal grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
+          <div class="lg:col-span-7">
+            {landmarkImage && <Image src={landmarkImage} alt={page.landmark.imageAlt} widths={[640, 1000, 1400]} sizes="(min-width: 1024px) 58vw, 92vw" class="w-full" />}
+          </div>
+          <div class="lg:col-span-5">
+            <SectionHeading eyebrow={page.landmark.eyebrow} title={page.landmark.title} intro={page.landmark.body} />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Map -->
+  <section aria-labelledby="map-heading" class="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-20">
+    <h2 id="map-heading" class="sr-only">Map</h2>
+    <div class="relative aspect-4/3 w-full overflow-hidden border border-linen-300 bg-linen-200 sm:aspect-21/9">
+      <iframe
+        src={mapEmbed}
+        title={`Map — ${site.name}`}
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        class="absolute inset-0 h-full w-full border-0"></iframe>
+    </div>
+    <p class="mt-3 text-xs text-ink-400">{page.mapCredit}</p>
+  </section>
+
+  <!-- Scores -->
+  {
+    page.scores.length > 0 && (
+      <section class="border-y border-linen-300 bg-linen-100 py-14 sm:py-16">
+        <dl class="mx-auto grid max-w-7xl gap-px bg-linen-300 sm:grid-cols-3">
+          {page.scores.map((score) => (
+            <div class="bg-linen-100 px-6 py-8 text-center">
+              <dd class="font-display text-5xl text-ink-900">{score.value}</dd>
+              <dt class="mt-3 text-[0.6rem] tracking-widest text-brass-600 uppercase">{score.label}</dt>
+              <p class="mt-2 text-sm text-ink-500">{score.note}</p>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )
+  }
+
+  <!-- Neighborhood -->
+  {
+    page.neighborhoodGroups.length > 0 && (
+      <section class="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
+        <SectionHeading eyebrow={page.neighborhoodSection.eyebrow} title={page.neighborhoodSection.title} />
+        <div class="reveal mt-12 grid gap-10 lg:grid-cols-3">
+          {page.neighborhoodGroups.map((group) => (
+            <div>
+              <h3 class="border-b border-linen-300 pb-3 font-display text-2xl text-ink-900">{group.title}</h3>
+              <ul class="mt-1">
+                {group.items.map((item) => (
+                  <li class="flex items-baseline justify-between gap-4 border-b border-linen-200 py-4">
+                    <span>
+                      <span class="block text-sm text-ink-800">{item.name}</span>
+                      <span class="block text-xs text-ink-400">{item.detail}</span>
+                    </span>
+                    <span class="shrink-0 text-xs tracking-widest text-brass-600 uppercase">
+                      {item.minutes} {page.minutesLabel}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Commutes -->
+  {
+    page.commutes.length > 0 && (
+      <section class="relative isolate overflow-hidden bg-ink-900">
+        <Image src={neighborhood} alt="" aria-hidden="true" widths={[640, 1024, 1600, 2000]} sizes="100vw" class="absolute inset-0 -z-10 h-full w-full object-cover opacity-25" />
+        <div class="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
+          <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+            <div class="lg:col-span-5">
+              <SectionHeading eyebrow={page.commuteSection.eyebrow} tone="light" title={page.commuteSection.title} intro={page.commuteSection.intro} />
+            </div>
+            <div class="lg:col-span-7">
+              <ul class="divide-y divide-linen-50/12 border-y border-linen-50/12">
+                {page.commutes.map((commute) => (
+                  <li class="flex items-center justify-between gap-6 py-5">
+                    <span class="text-linen-100">{commute.destination}</span>
+                    <span class="flex shrink-0 items-baseline gap-4">
+                      <span class="text-[0.65rem] tracking-widest text-ink-400 uppercase">{commute.mode}</span>
+                      <span class="w-16 text-right font-display text-2xl text-brass-300">{commute.time}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

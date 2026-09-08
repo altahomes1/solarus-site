@@ -1,0 +1,75 @@
+{
+  "name": "Solarus",
+  "tagline": "Where serenity and water meet",
+  "description": "A first in Galveston. The newest residential retreat on Galveston Beach — exceptional amenities and green terraces that harmoniously blend ecological mindfulness and breathtaking architecture.",
+  "logo": {
+    "dark": "/logo.svg",
+    "light": "/logo-light.svg",
+    "heightPx": 80
+  },
+  "unitTerm": {
+    "singular": "residence",
+    "plural": "residences"
+  },
+  "formspreeId": "YOUR_FORM_ID",
+  "phone": "123-456-7890",
+  "phoneHref": "+11234567890",
+  "email": "info@solarus.com",
+  "address": {
+    "street": "10717 Termini-San Luis Pass Road",
+    "city": "Galveston",
+    "state": "TX",
+    "zip": "77554",
+    "country": "USA"
+  },
+  "geo": {
+    "lat": 29.196,
+    "lng": -94.952
+  },
+  "salesGallery": {
+    "hours": [
+      {
+        "days": "Monday – Friday",
+        "time": "By appointment"
+      },
+      {
+        "days": "Saturday – Sunday",
+        "time": "By appointment"
+      }
+    ]
+  },
+  "brokerage": {
+    "name": "Solarus",
+    "license": "",
+    "agent": "Sales team",
+    "agentLicense": ""
+  },
+  "social": [
+    {
+      "label": "Instagram",
+      "href": "https://instagram.com/"
+    },
+    {
+      "label": "Facebook",
+      "href": "https://facebook.com/"
+    }
+  ],
+  "stats": [
+    {
+      "value": "7",
+      "label": "Residences"
+    },
+    {
+      "value": "5",
+      "label": "Penthouses"
+    },
+    {
+      "value": "947–3,000",
+      "label": "Square feet"
+    },
+    {
+      "value": "Beachfront",
+      "label": "Galveston, TX"
+    }
+  ]
+}

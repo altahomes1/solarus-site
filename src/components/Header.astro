@@ -1,0 +1,143 @@
+---
+import site from '../data/site.json';
+import shared from '../data/shared.json';
+
+const links = [
+  { href: '/', label: shared.nav.home },
+  { href: '/availability', label: shared.nav.availability },
+  { href: '/amenities', label: shared.nav.amenities },
+  { href: '/gallery', label: shared.nav.gallery },
+  { href: '/visionaries', label: shared.nav.visionaries },
+  { href: '/vision', label: shared.nav.vision },
+  { href: '/contact', label: shared.nav.contact },
+];
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-50 border-b border-ink-900/8 bg-linen-50/85 backdrop-blur-md transition-shadow"
+>
+  <div class="mx-auto flex min-h-16 max-w-7xl items-center justify-between px-5 py-2 sm:min-h-20 sm:px-8">
+    <a href="/" class="inline-flex items-center py-1.5 transition-opacity hover:opacity-70">
+      {
+        site.logo?.dark ? (
+          <>
+            <img src={site.logo.dark} alt={site.name} class="h-[var(--logo-h-sm)] w-auto sm:h-[var(--logo-h)]" style={`--logo-h:${site.logo.heightPx ?? 84}px;--logo-h-sm:${site.logo.heightPx ?? 84}px`} />
+          </>
+        ) : (
+          <span class="font-display text-xl leading-none tracking-tight text-ink-900 sm:text-2xl">
+            {site.name}
+            {shared.header.subtitle && (
+              <span class="mt-0.5 block font-sans text-[0.5rem] tracking-widest text-brass-600 uppercase sm:text-[0.55rem]">{shared.header.subtitle}</span>
+            )}
+          </span>
+        )
+      }
+    </a>
+
+    <nav aria-label="Primary" class="hidden items-center gap-7 lg:flex">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            aria-current={isActive(link.href) ? 'page' : undefined}
+            class:list={[
+              'relative py-1 text-[0.8rem] tracking-[0.14em] uppercase transition-colors',
+              isActive(link.href)
+                ? 'text-ink-900 after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:bg-brass-500'
+                : 'text-ink-500 hover:text-ink-900',
+            ]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a
+        href={`tel:${site.phoneHref}`}
+        class="hidden text-[0.8rem] tracking-[0.14em] text-ink-600 uppercase transition-colors hover:text-ink-900 xl:inline"
+      >
+        {site.phone}
+      </a>
+      <a
+        href="/contact"
+        class="hidden bg-ink-900 px-6 py-3 text-[0.7rem] tracking-widest text-linen-50 uppercase transition-colors hover:bg-brass-600 sm:inline-block"
+      >
+        {shared.header.tourButton}
+      </a>
+
+      <button
+        id="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        class="-mr-3 inline-flex h-12 w-12 items-center justify-center text-ink-900 lg:hidden"
+      >
+        <span class="sr-only">{shared.header.menuToggle}</span>
+        <svg class="h-8 w-8" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+          <path class="nav-open-icon" d="M2 5h16M2 10h16M2 15h16" stroke-linecap="square" />
+          <path class="nav-close-icon hidden" d="M4 4l12 12M16 4L4 16" stroke-linecap="square" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-nav" aria-label="Primary mobile" hidden class="border-t border-ink-900/8 bg-linen-50 lg:hidden">
+    <ul class="mx-auto max-w-7xl px-5 py-2 sm:px-8">
+      {
+        links.map((link) => (
+          <li class="border-b border-ink-900/6 last:border-0">
+            <a
+              href={link.href}
+              aria-current={isActive(link.href) ? 'page' : undefined}
+              class:list={['block py-4 font-display text-2xl', isActive(link.href) ? 'text-brass-600' : 'text-ink-900']}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+      <li class="flex flex-col gap-3 py-5 sm:hidden">
+        <a href="/contact" class="bg-ink-900 px-6 py-4 text-center text-[0.7rem] tracking-widest text-linen-50 uppercase">
+          {shared.header.tourButton}
+        </a>
+        <a href={`tel:${site.phoneHref}`} class="py-1 text-center text-sm text-ink-500">{site.phone}</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const panel = document.getElementById('mobile-nav');
+  const openIcon = document.querySelector('.nav-open-icon');
+  const closeIcon = document.querySelector('.nav-close-icon');
+
+  function setOpen(open: boolean) {
+    if (!toggle || !panel) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    panel.hidden = !open;
+    openIcon?.classList.toggle('hidden', open);
+    closeIcon?.classList.toggle('hidden', !open);
+  }
+
+  toggle?.addEventListener('click', () => {
+    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setOpen(false);
+  });
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', (event) => {
+    if (event.matches) setOpen(false);
+  });
+
+  const header = document.getElementById('site-header');
+  const onScroll = () => header?.classList.toggle('shadow-sm', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>

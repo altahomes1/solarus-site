@@ -1,0 +1,81 @@
+{
+  "photos": [
+    {
+      "image": "/src/assets/gallery/01-exterior.jpg",
+      "alt": "Solarus from the beach: four stories of glass with planted terraces, a rooftop pergola and a white footbridge to the sand",
+      "caption": "Solarus from the beach",
+      "category": "Exterior",
+      "wide": true
+    },
+    {
+      "image": "/src/assets/gallery/02-living.jpg",
+      "alt": "Residence living room with floor-to-ceiling glass and Gulf views on two sides",
+      "caption": "Living room with views on two sides",
+      "category": "Residences",
+      "wide": false
+    },
+    {
+      "image": "/src/assets/gallery/11-dining-kitchen.jpg",
+      "alt": "Residence dining room with a marble table, pendant lights and the kitchen beyond",
+      "caption": "Dining room and kitchen",
+      "category": "Residences",
+      "wide": true
+    },
+    {
+      "image": "/src/assets/gallery/03-interior.jpg",
+      "alt": "Kitchen: black marble island with bar seating, geometric pendant lights and the Gulf beyond the balcony",
+      "caption": "Kitchen with a black marble island and Gulf views",
+      "category": "Residences",
+      "wide": false
+    },
+    {
+      "image": "/src/assets/gallery/04-interior.jpg",
+      "alt": "Living room: linen sectionals with yellow accents, floor-to-ceiling glass and the Gulf beyond",
+      "caption": "Living room open to the balcony",
+      "category": "Residences",
+      "wide": false
+    },
+    {
+      "image": "/src/assets/gallery/05-interior.jpg",
+      "alt": "Bedroom opening onto a balcony with a cafe table and the Gulf beyond",
+      "caption": "Bedroom with a private balcony",
+      "category": "Residences",
+      "wide": true
+    },
+    {
+      "image": "/src/assets/gallery/06-interior.jpg",
+      "alt": "Dining room with a black marble table, the living area and balcony beyond",
+      "caption": "Dining room, living room beyond",
+      "category": "Residences",
+      "wide": false
+    },
+    {
+      "image": "/src/assets/gallery/07-pool.jpg",
+      "alt": "Pool deck at dusk — palms, cabanas and dining terraces beside the glass facade",
+      "caption": "The pool deck at dusk",
+      "category": "Amenities",
+      "wide": false
+    },
+    {
+      "image": "/src/assets/gallery/08-penthouse-pool.jpg",
+      "alt": "Penthouse-level swimming pool",
+      "caption": "Penthouse pool",
+      "category": "Amenities",
+      "wide": true
+    },
+    {
+      "image": "/src/assets/gallery/09-penthouse-pool-ocean.jpg",
+      "alt": "Penthouse pool with the Gulf beyond",
+      "caption": "Penthouse pool, Gulf beyond",
+      "category": "Amenities",
+      "wide": false
+    },
+    {
+      "image": "/src/assets/gallery/10-beach.jpg",
+      "alt": "Galveston beach dunes with the Gulf behind",
+      "caption": "The Galveston shoreline",
+      "category": "Exterior",
+      "wide": false
+    }
+  ]
+}

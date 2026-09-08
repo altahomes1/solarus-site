@@ -1,0 +1,32 @@
+{
+  "seoDescription": "Solarus sits directly on Galveston Beach at 10717 Termini-San Luis Pass Road, on the quiet west end of the island.",
+  "header": {
+    "eyebrow": "Location",
+    "title": "On the beach, at the quiet end of the island",
+    "intro": "Every time we cross the Causeway into Galveston, a weight lifts and the mind starts to clear. Solarus sits directly on the beach along Termini-San Luis Pass Road, on the west end of the island.",
+    "image": "/src/assets/gallery/10-beach.jpg",
+    "imageAlt": "Galveston beach dunes with the Gulf behind"
+  },
+  "directionsButton": "Get directions",
+  "mapCredit": "Map data © OpenStreetMap contributors.",
+  "scores": [],
+  "neighborhoodSection": {
+    "eyebrow": "The area",
+    "title": "Nearby"
+  },
+  "neighborhoodGroups": [],
+  "minutesLabel": "min",
+  "commuteSection": {
+    "eyebrow": "Getting around",
+    "title": "Connected",
+    "intro": ""
+  },
+  "commutes": [],
+  "landmark": {
+    "eyebrow": "Galveston",
+    "title": "An island with deep roots",
+    "body": "Galveston has deep historical roots, and generations have felt the same inner peace and warmth when experiencing its beauty. The Pleasure Pier, the Strand and the Seawall are a short drive up the island; Solarus sits on the quieter west end, along one of the most tranquil stretches of the island.",
+    "image": "/src/assets/location/pleasure-pier.jpg",
+    "imageAlt": "Watercolor of the Galveston Pleasure Pier and its Ferris wheel seen from above"
+  }
+}

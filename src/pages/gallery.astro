@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import PageHero from '../components/PageHero.astro';
+import GalleryGrid from '../components/GalleryGrid.astro';
+import page from '../data/pages/gallery.json';
+---
+
+<BaseLayout title={page.header.eyebrow} description={page.seoDescription}>
+  <PageHero eyebrow={page.header.eyebrow} title={page.header.title} intro={page.header.intro} image={page.header.image} imageAlt={page.header.imageAlt}>
+  </PageHero>
+
+  <section class="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-20">
+    <GalleryGrid />
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 pb-20 sm:px-8 sm:pb-28">
+    <div class="border border-linen-300 bg-linen-100 px-6 py-14 text-center sm:px-16">
+      <SectionHeading eyebrow={page.cta.eyebrow} title={page.cta.title} align="center" intro={page.cta.intro} />
+      <a href="/contact" class="mt-9 inline-block bg-ink-900 px-8 py-4 text-[0.7rem] tracking-widest text-linen-50 uppercase transition-colors hover:bg-brass-600">
+        {page.cta.button}
+      </a>
+    </div>
+  </section>
+</BaseLayout>

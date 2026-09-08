@@ -1,0 +1,150 @@
+{
+  "seoDescription": "A new beachfront retreat on Galveston Beach — residences and penthouses for sale, a members spa, adults-only and family pools, and a rooftop made for sunsets.",
+  "heroEyebrow": "A first in Galveston",
+  "heroBadge": "Now selling",
+  "heroImageAlt": "Solarus from the beach, with its planted terraces and footbridge to the sand",
+  "heroButtons": {
+    "primary": "View residences",
+    "secondary": "Inquire"
+  },
+  "heroStatsInHero": true,
+  "discoverSection": {
+    "eyebrow": "Discover",
+    "title": "Explore Solarus"
+  },
+  "discover": [
+    {
+      "title": "The residences",
+      "text": "Seven two- and three-bedroom residences and five penthouses, all facing the Gulf.",
+      "image": "/src/assets/gallery/02-living.jpg",
+      "link": "/availability",
+      "linkLabel": "Explore"
+    },
+    {
+      "title": "Amenities",
+      "text": "A members spa, adults-only and family pools, a sunset rooftop lounge and a wine vault.",
+      "image": "/src/assets/gallery/07-pool.jpg",
+      "link": "/amenities",
+      "linkLabel": "Explore"
+    },
+    {
+      "title": "Gallery",
+      "text": "The architecture, the residences and the amenity spaces.",
+      "image": "/src/assets/gallery/08-penthouse-pool.jpg",
+      "link": "/gallery",
+      "linkLabel": "Explore"
+    },
+    {
+      "title": "The vision",
+      "text": "Glass, concrete, wood and the natural oceanfront seascape.",
+      "image": "/src/assets/gallery/01-exterior.jpg",
+      "link": "/vision",
+      "linkLabel": "Explore"
+    },
+    {
+      "title": "Visionaries",
+      "text": "The team behind the concept, the finance, the architecture and the planning.",
+      "image": "/src/assets/gallery/10-beach.jpg",
+      "link": "/visionaries",
+      "linkLabel": "Explore"
+    }
+  ],
+  "introSection": {
+    "eyebrow": "The building",
+    "title": "The newest residential retreat on Galveston Beach",
+    "intro": "Exceptional amenities with green-space terraces that harmoniously blend ecological mindfulness and breathtaking architecture."
+  },
+  "introImages": {
+    "alt1": "A residence living room with Gulf views",
+    "alt2": "The pool deck at dusk",
+    "alt3": "The penthouse pool"
+  },
+  "pillars": [
+    {
+      "title": "Glass, concrete, wood and sea",
+      "body": "A modern, sophisticated condominium embedded into the seaside beachfront environment — a fusion of minimalist design and breathtaking architectural style."
+    },
+    {
+      "title": "Secure and technologically advanced",
+      "body": "Reserved parking with EV charging, secure facilities with private beach access, and 24/7 security monitoring."
+    },
+    {
+      "title": "Built to live mindfully",
+      "body": "A members spa with sauna and cold plunge, adults-only and family pools, a wine vault and a curated library — amenities designed for expression, substance and growth."
+    }
+  ],
+  "features": [
+    {
+      "eyebrow": "Amenities",
+      "title": "Amenities to live mindfully",
+      "body": "A members spa with sauna, cold plunge and hot yoga. Adults-only and family pools overlooking the beach, a sunset rooftop lounge, private rooftop terraces, and a wine vault with a sommelier table.",
+      "image": "/src/assets/gallery/07-pool.jpg",
+      "imageAlt": "The pool deck at dusk",
+      "link": "/amenities",
+      "linkLabel": "Discover the amenities",
+      "imageSide": "right"
+    },
+    {
+      "eyebrow": "The penthouses",
+      "title": "Five penthouses above it all",
+      "body": "Three-bedroom penthouses up to 3,000 square feet, with private terraces and the penthouse-level pool looking straight out over the Gulf.",
+      "image": "/src/assets/gallery/09-penthouse-pool-ocean.jpg",
+      "imageAlt": "The penthouse pool with the Gulf beyond",
+      "link": "/availability?beds=3",
+      "linkLabel": "Experience the penthouses",
+      "imageSide": "left"
+    },
+    {
+      "eyebrow": "On the beach",
+      "title": "Directly on Galveston Beach",
+      "body": "A private dune walkover protects the dunes and simplifies the journey to the sand. Pool-level restrooms with showers and lockers, a beach-inspired fire pit, and one of the most tranquil stretches of the island's west end.",
+      "image": "/src/assets/gallery/10-beach.jpg",
+      "imageAlt": "Galveston beach dunes with the Gulf behind",
+      "link": "/location",
+      "linkLabel": "Explore the beach",
+      "imageSide": "right"
+    }
+  ],
+  "featuredSection": {
+    "eyebrow": "Residences",
+    "title": "Residences and penthouses"
+  },
+  "featuredButton": "See all",
+  "priceChips": {
+    "saleFrom": "For sale from",
+    "leaseFrom": "For lease from"
+  },
+  "amenitiesSection": {
+    "eyebrow": "Amenities",
+    "title": "Amenities to live mindfully",
+    "intro": "Built to push your body, relax your mind, and make you present in the moments that truly matter."
+  },
+  "amenities": [
+    "Exclusive members spa",
+    "Adults-only and family pools",
+    "Sunset rooftop lounge",
+    "Private rooftop terraces",
+    "Main gym",
+    "In-house wine vault",
+    "Private dune walkover",
+    "Secure facilities with private beach access",
+    "24/7 security monitoring",
+    "Reserved parking with EV charging"
+  ],
+  "locationSection": {
+    "eyebrow": "Galveston",
+    "title": "Feel yourself let go of the noise of life",
+    "intro": "Directly on Galveston Beach at the quiet west end of the island — the peaceful sea breeze, the waves that never seem to end, and the gentle flowing dunes."
+  },
+  "locationImageAlt": "Galveston beach dunes and the Gulf",
+  "locationButton": "Explore the location",
+  "ctaSection": {
+    "eyebrow": "Inquire",
+    "title": "Come with us — feel the vision brought to life",
+    "intro": "Tell us which residence interests you and we will be in touch."
+  },
+  "ctaButtons": {
+    "primary": "Schedule a private appointment",
+    "call": "Call"
+  }
+}

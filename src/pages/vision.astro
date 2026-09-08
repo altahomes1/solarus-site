@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import PageHero from '../components/PageHero.astro';
+import page from '../data/pages/vision.json';
+
+const blocks = page.blocks.filter((b) => b.body && b.body.trim().length > 0);
+---
+
+<BaseLayout title={page.header.eyebrow} description={page.seoDescription}>
+  <PageHero eyebrow={page.header.eyebrow} title={page.header.title} image={page.header.image} imageAlt={page.header.imageAlt} />
+
+  <section class="mx-auto max-w-3xl px-5 py-16 sm:px-8 sm:py-24">
+    <div class="reveal space-y-7 text-base leading-relaxed text-ink-600 sm:text-lg">
+      {page.paragraphs.map((text) => <p>{text}</p>)}
+    </div>
+  </section>
+
+  {
+    blocks.length > 0 && (
+      <section class="border-y border-linen-300 bg-linen-100 py-12 sm:py-24">
+        <div class="mx-auto max-w-7xl space-y-16 px-5 sm:px-8">
+          {blocks.map((block) => (
+            <div class="reveal grid gap-8 lg:grid-cols-12">
+              <div class="lg:col-span-4">
+                <p class="font-display text-6xl text-brass-400">{block.number}</p>
+                <h2 class="mt-2 font-display text-3xl text-ink-900">{block.title}</h2>
+              </div>
+              <div class="space-y-5 text-base leading-relaxed text-ink-600 lg:col-span-8">
+                {block.body.split(/\n\s*\n/).map((para) => <p>{para}</p>)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <section class="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
+    <div class="border border-linen-300 bg-linen-100 px-6 py-14 text-center sm:px-16">
+      <SectionHeading eyebrow={page.cta.eyebrow} title={page.cta.title} align="center" />
+      <a href="/visionaries" class="mt-9 inline-block bg-ink-900 px-8 py-4 text-[0.7rem] tracking-widest text-linen-50 uppercase transition-colors hover:bg-brass-600">
+        {page.cta.button}
+      </a>
+    </div>
+  </section>
+</BaseLayout>

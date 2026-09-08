@@ -1,0 +1,148 @@
+{
+  "seoDescription": "Solarus amenities: members spa, main gym, adults-only and family pools, sunset rooftop lounge, wine vault and private beach access on Galveston Beach.",
+  "header": {
+    "eyebrow": "Amenities",
+    "title": "Amenities to live mindfully",
+    "intro": "Amenities designed for expression, substance and growth. Built to push your body, relax your mind, and make you present in the moments that truly matter — these are Solarus' exceptional amenities.",
+    "image": "/src/assets/gallery/07-pool.jpg",
+    "imageAlt": "The pool deck overlooking the beach"
+  },
+  "groups": [
+    {
+      "title": "In the building",
+      "items": [
+        {
+          "name": "24/7 security monitoring",
+          "description": "Around-the-clock monitoring and secure facilities, with private access to the beach."
+        },
+        {
+          "name": "In-house wine vault",
+          "description": "Environmentally controlled private lockers with optimal temperatures. Complete with a sommelier table."
+        },
+        {
+          "name": "Reserved parking",
+          "description": "Park in the same spot every time — never waste time finding a spot again."
+        },
+        {
+          "name": "Game room",
+          "description": "A space perfect for kids and adults who want to engage their minds and have fun."
+        },
+        {
+          "name": "Grill and gathering areas",
+          "description": "With plenty of seating, these areas were designed with large, intimate gatherings in mind."
+        },
+        {
+          "name": "Visitor suites",
+          "description": "Reserved suites in the building for your guests, so they can stay close by during their visit."
+        },
+        {
+          "name": "Exclusive members spa",
+          "description": "Additional amenities that center around mindfulness and bodily connection."
+        },
+        {
+          "name": "Dog park and putting green",
+          "description": "Each in its own separated area — engaging and entertaining for humans and furry friends alike."
+        },
+        {
+          "name": "Meeting space",
+          "description": "A reservable space for meetings that foster creativity and productivity."
+        },
+        {
+          "name": "Private EV charging stations",
+          "description": "Ample parking with charging options for all of our savvy EV drivers."
+        },
+        {
+          "name": "Coffee lounge",
+          "description": "A gourmet cup of espresso awaits, with ambient soft music. Lounge in a beautifully designed space while you work or browse."
+        },
+        {
+          "name": "Curated library",
+          "description": "A snug sanctuary, perfect for settling in with a good book."
+        }
+      ],
+      "image": "/src/assets/gallery/11-dining-kitchen.jpg",
+      "imageAlt": "Residence dining room and kitchen"
+    },
+    {
+      "title": "On the rooftop",
+      "image": "/src/assets/gallery/08-penthouse-pool.jpg",
+      "imageAlt": "Rooftop pool",
+      "items": [
+        {
+          "name": "Sunset rooftop lounge",
+          "description": "A rooftop lounge positioned for Galveston's sunsets over the Gulf."
+        },
+        {
+          "name": "Private rooftop terraces",
+          "description": "Reserved terraces above it all — open sky, sea air and the shoreline below."
+        }
+      ]
+    },
+    {
+      "title": "Outdoor living",
+      "items": [
+        {
+          "name": "Beach-inspired fire pit",
+          "description": "Family beach area with a fire pit — perfect for making memories and s'mores."
+        },
+        {
+          "name": "Children's play area",
+          "description": "A unique play area for children."
+        },
+        {
+          "name": "Private dune walkover",
+          "description": "A private walkover protects the dunes and simplifies the journey to the sand."
+        }
+      ],
+      "image": "/src/assets/gallery/10-beach.jpg",
+      "imageAlt": "Galveston beach dunes with the Gulf behind"
+    },
+    {
+      "title": "At the pools",
+      "items": [
+        {
+          "name": "Adults-only pool",
+          "description": "A calm, elegant pool overlooking the beach, reserved for adults."
+        },
+        {
+          "name": "Family pool",
+          "description": "Complete with playful water features for children to splash in."
+        },
+        {
+          "name": "Poolside cabanas",
+          "description": "A cozy respite from the Galveston sun — retreat, relax and recharge."
+        },
+        {
+          "name": "Pool-level restrooms",
+          "description": "Pool-level restrooms with showers and lockers."
+        }
+      ],
+      "image": "/src/assets/gallery/07-pool.jpg",
+      "imageAlt": "Pool deck at dusk"
+    },
+    {
+      "title": "For wellness",
+      "items": [
+        {
+          "name": "Pickleball court",
+          "description": "A multifunctional court designed for pickleball, but adaptable for almost any sport."
+        },
+        {
+          "name": "Main gym",
+          "description": "A light-filled main gym with state-of-the-art strength and cardio equipment — everything you need to train, recover and grow, steps from the sand."
+        },
+        {
+          "name": "Members spa",
+          "description": "A dedicated spa area with sauna, cold plunge, meditation garden and hot yoga room."
+        }
+      ],
+      "image": "/src/assets/gallery/03-interior.jpg",
+      "imageAlt": "Residence interior"
+    }
+  ],
+  "cta": {
+    "eyebrow": "See the residences",
+    "title": "Two- and three-bedroom residences and five penthouses",
+    "button": "View residences"
+  }
+}

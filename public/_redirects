@@ -1,0 +1,9 @@
+# Cloudflare Pages redirects. One rule per line: <from> <to> <status>
+# Old Wix site paths -> their new homes (keeps old links and Google results working)
+/residences /availability   301
+/company    /amenities      301
+# Convenience aliases
+/units      /availability   301
+/listings   /availability   301
+/photos     /gallery        301
+/tour       /contact        301

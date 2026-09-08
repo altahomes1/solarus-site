@@ -1,0 +1,10 @@
+{
+  "title": "Page not found",
+  "header": {
+    "eyebrow": "404",
+    "title": "That page has moved on",
+    "intro": "The link may be out of date. The residences are always one click away."
+  },
+  "primaryButton": "View residences",
+  "secondaryButton": "Back to home"
+}

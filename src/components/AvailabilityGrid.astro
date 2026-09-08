@@ -1,0 +1,335 @@
+---
+import UnitCard from './UnitCard.astro';
+import site from '../data/site.json';
+import page from '../data/pages/availability.json';
+import { defaultSort, units, type Unit } from '../lib/units';
+
+const f = page.filters;
+
+interface Props {
+  units?: Unit[];
+}
+
+const { units: list = units } = Astro.props;
+const ordered = defaultSort(list);
+
+// If every residence is the same offering (all for sale, or all for lease),
+// the sale/lease filter is pointless — hide it. Marking units in the
+// dashboard is all it takes for this to appear or disappear.
+const hasBothOfferings = new Set(list.map((u) => u.listingType)).size > 1;
+
+const typeFilters = [
+  { value: 'all', label: f.offeringAll },
+  { value: 'sale', label: f.offeringSale },
+  { value: 'lease', label: f.offeringLease },
+];
+
+const bedFilters = [
+  { value: 'all', label: f.bedroomsAny },
+  { value: '0', label: f.studio },
+  { value: '1', label: f.oneBed },
+  { value: '2', label: f.twoBed },
+  { value: '3', label: f.threePlusBed },
+];
+
+const statusFilters = [
+  { value: 'all', label: f.statusAll },
+  { value: 'available', label: f.statusAvailable },
+  { value: 'pending', label: f.statusPending },
+  { value: 'sold', label: f.statusSold },
+];
+
+const groupClass =
+  'flex flex-wrap gap-1.5 border border-linen-300 bg-linen-50 p-1.5';
+const buttonClass =
+  'cursor-pointer px-3.5 py-2 text-[0.7rem] tracking-[0.12em] uppercase text-ink-500 transition-colors hover:text-ink-900 aria-pressed:bg-ink-900 aria-pressed:text-linen-50';
+---
+
+<section aria-labelledby="availability-heading">
+  <h2 id="availability-heading" class="sr-only">Residence availability</h2>
+
+  <!-- Filter bar -->
+  <div data-filter-bar class="border-y border-linen-300 bg-linen-100/70 py-6">
+    <div class="mx-auto max-w-7xl px-5 sm:px-8">
+      <div class="grid gap-5 lg:grid-cols-12 lg:items-end">
+        {
+          hasBothOfferings && (
+            <div class="lg:col-span-4">
+              <p class="eyebrow mb-2.5">{f.offeringLabel}</p>
+              <div class={groupClass} role="group" aria-label="Filter by offering type">
+                {typeFilters.map((option) => (
+                  <button
+                    type="button"
+                    class={buttonClass}
+                    data-filter-group="type"
+                    data-value={option.value}
+                    aria-pressed={option.value === 'all' ? 'true' : 'false'}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )
+        }
+
+        <div class="lg:col-span-5">
+          <p class="eyebrow mb-2.5">{f.bedroomsLabel}</p>
+          <div class={groupClass} role="group" aria-label="Filter by bedrooms">
+            {
+              bedFilters.map((option) => (
+                <button
+                  type="button"
+                  class={buttonClass}
+                  data-filter-group="beds"
+                  data-value={option.value}
+                  aria-pressed={option.value === 'all' ? 'true' : 'false'}
+                >
+                  {option.label}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="lg:col-span-3">
+          <label for="unit-search" class="eyebrow mb-2.5 block">{f.searchLabel}</label>
+          <input
+            id="unit-search"
+            type="search"
+            placeholder={f.searchPlaceholder}
+            autocomplete="off"
+            class="w-full border border-linen-300 bg-linen-50 px-4 py-3.5 text-sm text-ink-900 placeholder:text-ink-400 focus:border-brass-400"
+          />
+        </div>
+
+        <div class="lg:col-span-4">
+          <p class="eyebrow mb-2.5">{f.statusLabel}</p>
+          <div class={groupClass} role="group" aria-label="Filter by status">
+            {
+              statusFilters.map((option) => (
+                <button
+                  type="button"
+                  class={buttonClass}
+                  data-filter-group="status"
+                  data-value={option.value}
+                  aria-pressed={option.value === 'all' ? 'true' : 'false'}
+                >
+                  {option.label}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="lg:col-span-4">
+          <label for="unit-sort" class="eyebrow mb-2.5 block">{f.sortLabel}</label>
+          <select
+            id="unit-sort"
+            class="w-full cursor-pointer border border-linen-300 bg-linen-50 px-4 py-3.5 text-sm text-ink-900 focus:border-brass-400"
+          >
+            <option value="recommended">{f.sortRecommended}</option>
+            <option value="price-asc">{f.sortPriceAsc}</option>
+            <option value="price-desc">{f.sortPriceDesc}</option>
+            <option value="size-desc">{f.sortSizeDesc}</option>
+            <option value="size-asc">{f.sortSizeAsc}</option>
+            <option value="unit-asc">{f.sortUnit}</option>
+          </select>
+        </div>
+
+        <div class="flex items-center justify-between gap-4 lg:col-span-4 lg:justify-end">
+          <p aria-live="polite" class="text-sm text-ink-500">
+            <span data-result-count>{ordered.length}</span> {f.resultOf} {ordered.length} {site.unitTerm.plural}
+          </p>
+          <button
+            type="button"
+            data-reset-filters
+            class="cursor-pointer text-[0.7rem] tracking-widest text-ink-500 uppercase underline underline-offset-4 transition-colors hover:text-brass-600"
+          >
+            {f.resetLabel}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
+    <div data-unit-grid class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {ordered.map((unit, index) => <UnitCard unit={unit} eager={index < 3} />)}
+    </div>
+
+    <div data-empty-state hidden class="border border-linen-300 bg-linen-100 px-6 py-20 text-center">
+      <p class="font-display text-3xl text-ink-900">{page.emptyState.title}</p>
+      <p class="mx-auto mt-4 max-w-md text-sm leading-relaxed text-ink-500">
+        {page.emptyState.body}
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <button
+          type="button"
+          data-reset-filters
+          class="cursor-pointer border border-ink-900 px-6 py-3.5 text-[0.7rem] tracking-widest text-ink-900 uppercase transition-colors hover:bg-ink-900 hover:text-linen-50"
+        >
+          {page.emptyState.clearButton}
+        </button>
+        <a
+          href="/contact"
+          class="bg-ink-900 px-6 py-3.5 text-[0.7rem] tracking-widest text-linen-50 uppercase transition-colors hover:bg-brass-600"
+        >
+          {page.emptyState.contactButton}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Without JS the controls cannot do anything, so they are not shown. */
+  :global(.no-js) [data-filter-bar] {
+    display: none;
+  }
+</style>
+
+<script>
+  type FilterKey = 'type' | 'beds' | 'status';
+
+  const grid = document.querySelector<HTMLElement>('[data-unit-grid]');
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-unit-card]'));
+  const countEl = document.querySelector<HTMLElement>('[data-result-count]');
+  const emptyState = document.querySelector<HTMLElement>('[data-empty-state]');
+  const searchInput = document.querySelector<HTMLInputElement>('#unit-search');
+  const sortSelect = document.querySelector<HTMLSelectElement>('#unit-sort');
+  const groupButtons = Array.from(
+    document.querySelectorAll<HTMLButtonElement>('[data-filter-group]'),
+  );
+
+  if (grid && cards.length) {
+    const state: Record<FilterKey, string> & { search: string; sort: string } = {
+      type: 'all',
+      beds: 'all',
+      status: 'all',
+      search: '',
+      sort: 'recommended',
+    };
+
+    // Remember the server-rendered order so "Recommended" can be restored.
+    const baseOrder = new Map(cards.map((card, index) => [card, index]));
+
+    const num = (card: HTMLElement, key: string) => Number(card.dataset[key] ?? 0);
+
+    const comparators: Record<string, (a: HTMLElement, b: HTMLElement) => number> = {
+      recommended: (a, b) => (baseOrder.get(a) ?? 0) - (baseOrder.get(b) ?? 0),
+      'price-asc': (a, b) => num(a, 'price') - num(b, 'price'),
+      'price-desc': (a, b) => num(b, 'price') - num(a, 'price'),
+      'size-desc': (a, b) => num(b, 'sqft') - num(a, 'sqft'),
+      'size-asc': (a, b) => num(a, 'sqft') - num(b, 'sqft'),
+      'unit-asc': (a, b) => (a.dataset.unit ?? '').localeCompare(b.dataset.unit ?? '', 'en', {
+        numeric: true,
+      }),
+    };
+
+    function matches(card: HTMLElement): boolean {
+      if (state.type !== 'all' && card.dataset.type !== state.type) return false;
+      if (state.beds !== 'all' && card.dataset.beds !== state.beds) return false;
+      if (state.status !== 'all' && card.dataset.status !== state.status) return false;
+      if (state.search && !(card.dataset.search ?? '').includes(state.search)) return false;
+      return true;
+    }
+
+    function apply() {
+      const visible = cards.filter(matches);
+      const visibleSet = new Set(visible);
+
+      for (const card of cards) {
+        card.hidden = !visibleSet.has(card);
+      }
+
+      // Sorting is done with the CSS order property, so no DOM moves are needed.
+      const compare = comparators[state.sort] ?? comparators.recommended;
+      [...visible].sort(compare).forEach((card, index) => {
+        card.style.order = String(index);
+      });
+
+      if (countEl) countEl.textContent = String(visible.length);
+      if (emptyState) emptyState.hidden = visible.length > 0;
+      grid!.hidden = visible.length === 0;
+
+      syncUrl();
+    }
+
+    function syncUrl() {
+      const params = new URLSearchParams();
+      if (state.type !== 'all') params.set('type', state.type);
+      if (state.beds !== 'all') params.set('beds', state.beds);
+      if (state.status !== 'all') params.set('status', state.status);
+      if (state.search) params.set('q', state.search);
+      if (state.sort !== 'recommended') params.set('sort', state.sort);
+      const query = params.toString();
+      history.replaceState(null, '', query ? `?${query}` : location.pathname);
+    }
+
+    function setGroup(group: FilterKey, value: string) {
+      state[group] = value;
+      for (const button of groupButtons) {
+        if (button.dataset.filterGroup !== group) continue;
+        button.setAttribute('aria-pressed', String(button.dataset.value === value));
+      }
+    }
+
+    for (const button of groupButtons) {
+      button.addEventListener('click', () => {
+        setGroup(button.dataset.filterGroup as FilterKey, button.dataset.value ?? 'all');
+        apply();
+      });
+    }
+
+    let searchTimer: number | undefined;
+    searchInput?.addEventListener('input', () => {
+      window.clearTimeout(searchTimer);
+      searchTimer = window.setTimeout(() => {
+        state.search = searchInput.value.trim().toLowerCase();
+        apply();
+      }, 120);
+    });
+
+    sortSelect?.addEventListener('change', () => {
+      state.sort = sortSelect.value;
+      apply();
+    });
+
+    for (const button of document.querySelectorAll<HTMLButtonElement>('[data-reset-filters]')) {
+      button.addEventListener('click', () => {
+        (['type', 'beds', 'status'] as FilterKey[]).forEach((group) => setGroup(group, 'all'));
+        state.search = '';
+        state.sort = 'recommended';
+        if (searchInput) searchInput.value = '';
+        if (sortSelect) sortSelect.value = 'recommended';
+        apply();
+      });
+    }
+
+    // Allow deep links such as /availability?type=lease&beds=2 from other pages.
+    const params = new URLSearchParams(location.search);
+    const validGroups: Record<FilterKey, string[]> = {
+      type: ['sale', 'lease'],
+      beds: ['0', '1', '2', '3'],
+      status: ['available', 'pending', 'sold'],
+    };
+    for (const group of Object.keys(validGroups) as FilterKey[]) {
+      const value = params.get(group);
+      if (value && validGroups[group].includes(value)) setGroup(group, value);
+    }
+    const q = params.get('q');
+    if (q && searchInput) {
+      searchInput.value = q;
+      state.search = q.trim().toLowerCase();
+    }
+    const sort = params.get('sort');
+    if (sort && sort in comparators && sortSelect) {
+      sortSelect.value = sort;
+      state.sort = sort;
+    }
+
+    apply();
+  }
+</script>

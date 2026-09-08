@@ -1,0 +1,290 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import site from '../data/site.json';
+import page from '../data/pages/contact.json';
+import { formatPrice, bedLabel, units } from '../lib/units';
+
+// The form posts to Formspree. The form ID lives in Building info (site.json).
+const endpoint = `https://formspree.io/f/${site.formspreeId}`;
+const needsFormspreeSetup = site.formspreeId === 'YOUR_FORM_ID';
+
+// Only offer interest options that match what the building actually offers.
+const offerings = new Set(units.map((u) => u.listingType));
+const f = page.form;
+const interestOptions = [
+  ...(offerings.has('sale') ? [{ value: 'Purchase', label: f.interestPurchasing }] : []),
+  ...(offerings.has('lease') ? [{ value: 'Lease', label: f.interestLeasing }] : []),
+  { value: 'Undecided', label: f.interestUndecided },
+];
+
+const selectableUnits = units
+  .filter((unit) => unit.status !== 'sold')
+  .sort((a, b) => a.unit.localeCompare(b.unit, 'en', { numeric: true }));
+
+const fieldClass =
+  'w-full border border-linen-300 bg-linen-50 px-4 py-3.5 text-sm text-ink-900 transition-colors placeholder:text-ink-400 focus:border-brass-400';
+const labelClass = 'mb-2 block text-[0.65rem] tracking-widest text-ink-500 uppercase';
+---
+
+<BaseLayout title={page.header.eyebrow} description={page.seoDescription}>
+  <PageHero eyebrow={page.header.eyebrow} title={page.header.title} intro={page.header.intro} image={page.header.image} imageAlt={page.header.imageAlt}>
+  </PageHero>
+
+  <section class="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
+    <div class="grid gap-14 lg:grid-cols-12 lg:gap-16">
+      <!-- Form -->
+      <div class="lg:col-span-7">
+        {
+          needsFormspreeSetup && import.meta.env.DEV && (
+            <div class="mb-8 border border-brass-400 bg-brass-200/40 px-5 py-4 text-sm text-ink-700">
+              <p class="font-medium text-ink-900">Contact form not connected yet</p>
+              <p class="mt-1.5 leading-relaxed">
+                Enquiries will fail until you paste your Formspree form ID into the dashboard under
+                Building info → "Contact form ID". This notice only appears while previewing.
+              </p>
+            </div>
+          )
+        }
+
+        <form
+          id="contact-form"
+          action={endpoint}
+          method="POST"
+          class="space-y-6"
+          data-sending-label={f.sendingLabel}
+          data-submit-label={f.submitButton}
+          data-error-generic={page.errors.generic}
+          data-error-retry={page.errors.retry}
+          data-error-network={page.errors.network}
+        >
+          <!-- Formspree spam trap: bots fill it, humans never see it. -->
+          <div class="hidden" aria-hidden="true">
+            <label>
+              Do not fill this in
+              <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+            </label>
+          </div>
+          <input type="hidden" name="_subject" value={`${page.emailSubject} — ${site.name}`} />
+
+          <div class="grid gap-6 sm:grid-cols-2">
+            <div>
+              <label class={labelClass} for="firstName">{f.firstName}</label>
+              <input class={fieldClass} id="firstName" name="firstName" type="text" autocomplete="given-name" required />
+            </div>
+            <div>
+              <label class={labelClass} for="lastName">{f.lastName}</label>
+              <input class={fieldClass} id="lastName" name="lastName" type="text" autocomplete="family-name" required />
+            </div>
+          </div>
+
+          <div class="grid gap-6 sm:grid-cols-2">
+            <div>
+              <label class={labelClass} for="email">{f.email}</label>
+              <input class={fieldClass} id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+            <div>
+              <label class={labelClass} for="phone">
+                {f.phone} <span class="text-ink-400 normal-case">{f.optional}</span>
+              </label>
+              <input class={fieldClass} id="phone" name="phone" type="tel" autocomplete="tel" />
+            </div>
+          </div>
+
+          <fieldset>
+            <legend class={labelClass}>{f.roleLegend}</legend>
+            <div class="grid gap-3 sm:grid-cols-2">
+              {
+                [f.roleBuyer, f.roleBroker].map((label, index) => (
+                  <label class="flex cursor-pointer items-center gap-3 border border-linen-300 bg-linen-50 px-4 py-3.5 text-sm text-ink-700 transition-colors has-checked:border-brass-400 has-checked:bg-brass-200/25">
+                    <input type="radio" name="role" value={label} checked={index === 0} class="h-4 w-4 accent-brass-600" required />
+                    {label}
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend class={labelClass}>{f.interestLegend}</legend>
+            <div class:list={['grid gap-3', interestOptions.length === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2']}>
+              {
+                interestOptions.map((option, index) => (
+                  <label class="flex cursor-pointer items-center gap-3 border border-linen-300 bg-linen-50 px-4 py-3.5 text-sm text-ink-700 transition-colors has-checked:border-brass-400 has-checked:bg-brass-200/25">
+                    <input type="radio" name="interest" value={option.value} checked={index === 0} class="h-4 w-4 accent-brass-600" required />
+                    {option.label}
+                  </label>
+                ))
+              }
+            </div>
+          </fieldset>
+
+          <div class="grid gap-6 sm:grid-cols-2">
+            <div>
+              <label class={labelClass} for="unit">{f.unitLabel}</label>
+              <select class={fieldClass} id="unit" name="unit">
+                <option value="">{f.unitNoPreference}</option>
+                {
+                  selectableUnits.map((unit) => (
+                    <option value={unit.unit}>
+                      {unit.unit} — {bedLabel(unit.beds)}, {formatPrice(unit)}
+                    </option>
+                  ))
+                }
+              </select>
+            </div>
+            <div>
+              <label class={labelClass} for="timeframe">{f.timeframeLabel}</label>
+              <select class={fieldClass} id="timeframe" name="timeframe">
+                {f.timeframes.map((option) => <option value={option}>{option}</option>)}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class={labelClass} for="message">
+              {f.messageLabel} <span class="text-ink-400 normal-case">{f.optional}</span>
+            </label>
+            <textarea class={`${fieldClass} min-h-36 resize-y`} id="message" name="message" rows="5" placeholder={f.messagePlaceholder}></textarea>
+          </div>
+
+          <label class="flex items-start gap-3 text-xs leading-relaxed text-ink-500">
+            <input type="checkbox" name="consent" value="yes" required class="mt-0.5 h-4 w-4 shrink-0 accent-brass-600" />
+            <span>{f.consent}</span>
+          </label>
+
+          <div class="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center">
+            <button
+              type="submit"
+              data-submit
+              class="cursor-pointer bg-ink-900 px-8 py-4 text-[0.7rem] tracking-widest text-linen-50 uppercase transition-colors hover:bg-brass-600 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <span data-submit-label>{f.submitButton}</span>
+            </button>
+            <p class="text-xs text-ink-400">{f.replyNote}</p>
+          </div>
+
+          <p data-form-error hidden role="alert" class="border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800"></p>
+        </form>
+
+        <div data-form-success hidden role="status" class="border border-status-available/30 bg-emerald-50/60 px-6 py-14 text-center">
+          <p class="font-display text-3xl text-ink-900">{page.success.title}</p>
+          <p class="mx-auto mt-4 max-w-md text-sm leading-relaxed text-ink-600">
+            {page.success.body} <a href={`tel:${site.phoneHref}`} class="underline underline-offset-4">{site.phone}</a>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="lg:col-span-5 lg:pl-8">
+        <div class="border border-linen-300 bg-linen-100 p-8">
+          <h2 class="font-display text-2xl text-ink-900">{page.sidebar.title}</h2>
+          <div class="rule mt-4"></div>
+          <address class="mt-6 text-sm leading-relaxed text-ink-600 not-italic">
+            {site.address.street}<br />
+            {site.address.city}, {site.address.state} {site.address.zip}
+          </address>
+
+          <dl class="mt-6 space-y-2 text-sm">
+            <div class="flex justify-between gap-4 border-b border-linen-300 pb-2">
+              <dt class="text-ink-400">{page.sidebar.phone}</dt>
+              <dd><a href={`tel:${site.phoneHref}`} class="text-ink-800 hover:text-brass-600">{site.phone}</a></dd>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-linen-300 pb-2">
+              <dt class="text-ink-400">{page.sidebar.email}</dt>
+              <dd><a href={`mailto:${site.email}`} class="break-all text-ink-800 hover:text-brass-600">{site.email}</a></dd>
+            </div>
+          </dl>
+
+          <h3 class="eyebrow mt-8">{page.sidebar.hoursTitle}</h3>
+          <dl class="mt-4 space-y-2 text-sm">
+            {
+              site.salesGallery.hours.map((slot) => (
+                <div class="flex justify-between gap-4 border-b border-linen-300 pb-2">
+                  <dt class="text-ink-500">{slot.days}</dt>
+                  <dd class="text-right text-ink-800">{slot.time}</dd>
+                </div>
+              ))
+            }
+          </dl>
+
+          <h3 class="eyebrow mt-8">{page.sidebar.representedTitle}</h3>
+          <p class="mt-4 text-sm leading-relaxed text-ink-600">
+            {site.brokerage.agent}<br />
+            {site.brokerage.name}<br />
+            <span class="text-ink-400">{site.brokerage.agentLicense}</span>
+          </p>
+
+          <a href="/location" class="mt-8 inline-block border border-ink-900 px-6 py-3.5 text-[0.7rem] tracking-widest text-ink-900 uppercase transition-colors hover:bg-ink-900 hover:text-linen-50">
+            {page.sidebar.mapButton}
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('#contact-form');
+  const success = document.querySelector<HTMLElement>('[data-form-success]');
+  const errorBox = document.querySelector<HTMLElement>('[data-form-error]');
+  const submitButton = document.querySelector<HTMLButtonElement>('[data-submit]');
+  const submitLabel = document.querySelector<HTMLElement>('[data-submit-label]');
+
+  // All user-facing wording comes from the dashboard via data attributes.
+  const text = {
+    sending: form?.dataset.sendingLabel ?? 'Sending…',
+    submit: form?.dataset.submitLabel ?? 'Send',
+    generic: form?.dataset.errorGeneric ?? 'Something went wrong.',
+    retry: form?.dataset.errorRetry ?? 'Please try again.',
+    network: form?.dataset.errorNetwork ?? 'Could not reach the form service.',
+  };
+
+  // Deep link support: /contact?unit=907 preselects that residence.
+  const requestedUnit = new URLSearchParams(location.search).get('unit');
+  if (requestedUnit) {
+    const select = document.querySelector<HTMLSelectElement>('#unit');
+    const match = Array.from(select?.options ?? []).find((o) => o.value === requestedUnit);
+    if (select && match) select.value = requestedUnit;
+  }
+
+  function showError(message: string) {
+    if (!errorBox) return;
+    errorBox.textContent = message;
+    errorBox.hidden = false;
+  }
+
+  form?.addEventListener('submit', async (event) => {
+    if (!form.reportValidity()) return;
+    event.preventDefault();
+    if (errorBox) errorBox.hidden = true;
+    if (submitButton) submitButton.disabled = true;
+    if (submitLabel) submitLabel.textContent = text.sending;
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      });
+
+      if (response.ok) {
+        form.hidden = true;
+        if (success) success.hidden = false;
+        success?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      const data = await response.json().catch(() => null);
+      const detail = Array.isArray(data?.errors)
+        ? data.errors.map((e: { message: string }) => e.message).join(', ')
+        : text.generic;
+      showError(`${detail} ${text.retry}`);
+    } catch {
+      showError(text.network);
+    } finally {
+      if (submitButton) submitButton.disabled = false;
+      if (submitLabel) submitLabel.textContent = text.submit;
+    }
+  });
+</script>

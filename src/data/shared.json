@@ -1,0 +1,64 @@
+{
+  "nav": {
+    "home": "Home",
+    "availability": "Residences",
+    "amenities": "Amenities",
+    "gallery": "Gallery",
+    "visionaries": "Visionaries",
+    "vision": "The vision",
+    "contact": "Inquire"
+  },
+  "header": {
+    "subtitle": "Galveston",
+    "tourButton": "Inquire",
+    "skipLink": "Skip to content",
+    "menuToggle": "Toggle navigation"
+  },
+  "footer": {
+    "salesGalleryTitle": "Address",
+    "exploreTitle": "Menu",
+    "enquiriesTitle": "Contact",
+    "rights": "All rights reserved.",
+    "marketedBy": "Marketed by",
+    "legal": "Images, plans, dimensions, prices and availability are illustrative and subject to change without notice. Square footage is approximate. Equal Housing Opportunity."
+  },
+  "unitCard": {
+    "beds": "Beds",
+    "baths": "Baths",
+    "size": "Size",
+    "floor": "Floor",
+    "exposure": "Views",
+    "available": "Available",
+    "status": "Status",
+    "closed": "Closed",
+    "noLongerAvailable": "No longer available",
+    "enquire": "Inquire about",
+    "forSale": "For sale",
+    "forLease": "For lease",
+    "statusAvailable": "Available",
+    "statusPending": "Pending",
+    "statusSold": "Sold",
+    "studio": "Studio",
+    "priceOnRequest": "Price on request",
+    "availableNow": "Now",
+    "tbd": "TBD",
+    "interior": "Interior",
+    "exterior": "Exterior",
+    "total": "Total",
+    "viewPlan": "View plan",
+    "downloadPlan": "Download floor plan",
+    "closePlan": "Close",
+    "sqft": "sq ft"
+  },
+  "lightbox": {
+    "open": "Open larger image",
+    "close": "Close viewer",
+    "previous": "Previous image",
+    "next": "Next image"
+  },
+  "mobileBar": {
+    "enabled": true,
+    "callLabel": "Call",
+    "inquireLabel": "Inquire"
+  }
+}

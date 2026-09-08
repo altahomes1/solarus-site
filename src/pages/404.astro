@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import page from '../data/pages/notfound.json';
+---
+
+<BaseLayout title={page.title} description={page.header.intro}>
+  <section class="mx-auto flex min-h-[60svh] max-w-3xl flex-col justify-center px-5 py-24 text-center sm:px-8">
+    <SectionHeading as="h1" eyebrow={page.header.eyebrow} title={page.header.title} align="center" intro={page.header.intro} />
+    <div class="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+      <a href="/availability" class="bg-ink-900 px-8 py-4 text-[0.7rem] tracking-widest text-linen-50 uppercase transition-colors hover:bg-brass-600">
+        {page.primaryButton}
+      </a>
+      <a href="/" class="border border-ink-900 px-8 py-4 text-[0.7rem] tracking-widest text-ink-900 uppercase transition-colors hover:bg-ink-900 hover:text-linen-50">
+        {page.secondaryButton}
+      </a>
+    </div>
+  </section>
+</BaseLayout>
