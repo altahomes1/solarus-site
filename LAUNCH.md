@@ -1,4 +1,4 @@
-# Launch runbook — solarustower.com
+# Launch runbook — solarusgalveston.com
 
 Pre-flight (owner supplies):
 - [ ] Real sales phone + email -> dashboard Building info (replaces 123-456-7890 / info@solarus.com)
@@ -10,9 +10,9 @@ Pre-flight (owner supplies):
 Launch day (technical):
 1. [ ] Delete the `X-Robots-Tag: noindex` line from public/_headers
 2. [ ] Build + deploy; `curl -sI https://solarus.pages.dev/ | grep -i robots` must return nothing
-3. [ ] Cloudflare Pages -> solarus -> Custom domains: add solarustower.com AND www.solarustower.com
+3. [ ] Cloudflare Pages -> solarus -> Custom domains: add solarusgalveston.com AND solarusgalveston.com
 4. [ ] In the Wix account: point the domain per Cloudflare's instructions (domain stays registered at Wix)
-5. [ ] Verify https://www.solarustower.com loads, canonical + og tags show www.solarustower.com
+5. [ ] Verify https://solarusgalveston.com loads, canonical + og tags show solarusgalveston.com
 6. [ ] Submit sitemap in Google Search Console; keep Wix subscription until indexing looks healthy, then cancel
 7. [ ] GitHub backend for /admin (repo + update public/admin/config.yml backend.repo) so the dashboard edits production
 
@@ -20,3 +20,8 @@ Post-launch:
 - [ ] Analytics (port Alta's host-gated deferred component when IDs exist)
 - [ ] Self-host subset fonts (Alta pattern) to drop the Google Fonts request
 - [ ] Consider per-unit Offer JSON-LD once real prices exist (Alta pattern)
+
+## Domain routing (decided 2026-08-25)
+- Primary: solarusgalveston.com (registered at HostGator/Launchpad; DNS currently CNS53/54.HOSTGATOR.COM)
+- solarustower.com (Wix) 301-redirects to solarusgalveston.com, path-preserving, once its DNS moves to Cloudflare
+- solarustowers.com (plural) is UNREGISTERED — consider defensive registration

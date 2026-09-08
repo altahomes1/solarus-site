@@ -16,4 +16,4 @@ User-agent: Diffbot
 User-agent: ImagesiftBot
 Disallow: /
 
-Sitemap: https://www.solarustower.com/sitemap-index.xml
+Sitemap: https://solarusgalveston.com/sitemap-index.xml

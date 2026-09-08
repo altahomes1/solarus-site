@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 // The production domain. Drives canonical URLs, Open Graph tags and sitemap.xml.
-const SITE = 'https://www.solarustower.com';
+const SITE = 'https://solarusgalveston.com';
 
 export default defineConfig({
   site: SITE,
