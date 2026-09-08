@@ -7,3 +7,9 @@
 /listings   /availability   301
 /photos     /gallery        301
 /tour       /contact        301
+
+# The old tower domain forwards here permanently, path-preserving
+https://www.solarustower.com/* https://solarusgalveston.com/:splat 301
+https://solarustower.com/*     https://solarusgalveston.com/:splat 301
+# www of the new domain settles on the bare domain
+https://www.solarusgalveston.com/* https://solarusgalveston.com/:splat 301
